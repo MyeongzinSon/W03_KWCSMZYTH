@@ -24,7 +24,7 @@ public class InputInfo
     }
 }
 
-public class InputBuffer : MonoBehaviour
+public class InputQueueRecorder : MonoBehaviour
 {
     [SerializeField] float recordTime;
 
