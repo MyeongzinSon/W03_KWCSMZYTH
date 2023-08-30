@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public struct IntVector
@@ -24,148 +21,25 @@ public struct IntVector
         return $"({a},{b})";
     }
 }
+
 public class TetrisGrid
 {
-    static TetrisGrid _instance;
-    public static TetrisGrid Instance
+    public const int aAxis = 10;
+    public const int bAxis = 9;
+    public const float worldOffsetX = -5.5f;
+    public const float worldOffsetY = -3.5f;
+
+    Transform[,] grid;
+
+    void CheckRotate()
     {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new TetrisGrid();
-            }
-            return _instance;
-        }
+
     }
-
-    private const int aAxis = 10;
-    private const int bAxis = 9;
-    Transform[,] grid = new Transform[aAxis, bAxis];
-
-    float worldOffsetX = -5.5f;
-    float worldOffsetY = -3.5f;
-
-    public void Initialize()
-    {
-        for (int j = 0; j < bAxis; j++)
-        {
-            DestroyLine(j);
-        }
-    }
-
-    public RotationInfo CheckRotate(Tetrimino t, bool isClockwise)
+    void HardDrop(Tetrimino t)
     {
         var minos = t.GetBlocks();
-        var blockVectors = new List<IntVector>();
-
-        foreach (var m in minos)
-        { 
-            blockVectors.Add(GetGrid(m));
-        }
-
-        blockVectors = NormalizeToGrid(blockVectors, t);
-        Debug.Log(PrintList(blockVectors));
-        blockVectors = TetrisRotationInfo.RotateRaw(blockVectors, t.type, t.rotationType, isClockwise);
-        Debug.Log(PrintList(blockVectors));
-
-        var rotationOffsets = TetrisRotationInfo.GetData(t.type, t.rotationType, isClockwise);
-        for (int i = 0; i < rotationOffsets.Length; i++)
-        {
-            var rotatedVectors = new List<IntVector>();
-            foreach (var v in blockVectors)
-            {
-                rotatedVectors.Add(v + rotationOffsets[i]);
-            }
-
-            bool canRotate = true;
-            foreach (var v in rotatedVectors)
-            {
-                if (!IsEmptyGrid(v.a, v.b))
-                {
-                    canRotate = false; break;
-                }
-            }
-
-            if (canRotate)
-            {
-                Debug.Log($"Can Rotate : offset = ({rotationOffsets[i].a}, {rotationOffsets[i].b})");
-                return new RotationInfo(isClockwise ? -1 : 1, rotationOffsets[i].a, rotationOffsets[i].b);
-            }
-        }
-        Debug.LogError("모든 경우를 따져도 회전할 수 없음!");
-        return new RotationInfo(0, 0, 0);
     }
-    List<IntVector> NormalizeToGrid(List<IntVector> list, Tetrimino t)
-    {
-        int minA = aAxis, maxA = 0, minB = bAxis, maxB = 0;
-        int[] aArray = new int[list.Count];
-        int[] bArray = new int[list.Count];
-        for (int i = 0; i < list.Count; i++)
-        {
-            var v = list[i];
-            aArray[i] = v.a;
-            bArray[i] = v.b;
-            minA = Math.Min(minA, v.a);
-            maxA = Math.Max(maxA, v.a);
-            minB = Math.Min(minB, v.b);
-            maxB = Math.Max(maxB, v.b);
-        }
-        //Debug.Log($"list.Count={list.Count}, aArray.Length={aArray.Length}, bArray.Length={bArray.Length}, minA={minA}, maxA={maxA}, minB={minB}, maxB={maxB}");
-        if (minA < 0)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                aArray[i] -= minA;
-            }
-            t.transform.Translate(Vector3.up * -minA, Space.World);
-        }
-        else if (maxA > aAxis)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                aArray[i] -= maxA - aAxis;
-            }
-            t.transform.Translate(Vector3.up * -(maxA - aAxis), Space.World);
-        }
-
-        if (minB < 0)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                bArray[i] -= minB;
-            }
-            t.transform.Translate(Vector3.left * -minB, Space.World);
-        }
-        else if (maxB > bAxis)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                bArray[i] -= maxB - bAxis;
-            }
-            t.transform.Translate(Vector3.left * -(maxB - bAxis), Space.World);
-        }
-        List<IntVector> result = new List<IntVector>();
-        for (int i = 0; i < list.Count; i++)
-        {
-            result.Add(new IntVector(aArray[i], bArray[i]));
-        }
-        return result;
-    }
-
-    public bool CheckFall(Tetrimino t)
-    {
-        var minos = t.GetBlocks();
-        foreach (var m in minos)
-        {
-            var pos = GetGrid(m);
-            if (pos.b == 0 || !IsEmptyGrid(pos.a, pos.b - 1))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    
 
     public bool IsEmptyGrid(int a, int b)
     {
@@ -200,21 +74,6 @@ public class TetrisGrid
         }
         return true;
     }
-    IntVector GetGrid(Transform t)
-    {
-        int gridA = Mathf.RoundToInt(t.position.x - worldOffsetX);
-        int gridB = -Mathf.RoundToInt(t.position.y - worldOffsetY);
-        //Debug.Log($"GetGrid : [{gridA},{gridB}]");
-        return new IntVector(gridA, gridB);
-    }
-
-    Vector3 GridToPosition(IntVector v)
-    {
-        float x = v.a + worldOffsetX;
-        float y = v.b + worldOffsetY;
-        return Vector3.right * x + Vector3.up * y;
-    }
-
     public void AddBlock(Transform t)
     {
         var pos = GetGrid(t);
@@ -226,24 +85,29 @@ public class TetrisGrid
         t.position = GridToPosition(pos);
         grid[pos.a, pos.b] = t;
     }
-
-    public void PrintGrid()
+    IntVector GetGrid(Transform t)
     {
-        int count = 0;
-        for (int j = 0; j < bAxis; j++)
+        int gridA = Mathf.RoundToInt(t.position.x - worldOffsetX);
+        int gridB = Mathf.RoundToInt(t.position.y - worldOffsetY);
+        Debug.Log($"GetGrid : [{gridA},{gridB}]");
+        return new IntVector(gridA, gridB);
+    }
+
+    Vector3 GridToPosition(IntVector v)
+    {
+        float x = v.a + worldOffsetX;
+        float y = v.b + worldOffsetY;
+        return Vector3.right * x + Vector3.up * y;
+    }
+    void DestroyLine(int b)
+    {
+        for (int i = 0; i < aAxis; i++)
         {
-            for (int i = 0; i < aAxis; i++)
+            if (grid[i, b] != null)
             {
-                if (grid[i, j] != null)
-                {
-                    Debug.Log($"PrintGrid : ({i}, {j})");
-                    count++;
-                }
+                GameObject.Destroy(grid[i, b].gameObject);
+                grid[i, b] = null;
             }
-        }
-        if (count == 0)
-        {
-            Debug.Log("PrintGrid : no blocks!");
         }
     }
     public int CatchLine()
@@ -266,17 +130,6 @@ public class TetrisGrid
         }
         return catchedLines;
     }
-    void DestroyLine(int b)
-    {
-        for (int i = 0; i < aAxis; i++)
-        {
-            if (grid[i, b] != null)
-            {
-                GameObject.Destroy(grid[i, b].gameObject);
-                grid[i, b] = null;
-            }
-        }
-    }
     void FallLine(int fallTo)
     {
         for (int j = fallTo; j < bAxis - 1; j++)
@@ -285,27 +138,11 @@ public class TetrisGrid
             {
                 if (grid[i, j + 1] != null)
                 {
-                    grid[i, j + 1].Translate(Vector2.right, Space.World);
+                    grid[i, j + 1].Translate(Vector2.down, Space.World);
                     grid[i, j] = grid[i, j + 1];
                     grid[i, j + 1] = null;
                 }
             }
         }
-    }
-    public bool IsGameOver()
-    {
-        return false;
-
-        return !IsEmptyGrid(7, 20);
-    }
-
-    string PrintList(List<IntVector> list)
-    {
-        string result = "";
-        foreach (var v in list)
-        {
-            result += v.ToString() + " ";
-        }
-        return result;
     }
 }

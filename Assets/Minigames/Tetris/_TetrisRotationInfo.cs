@@ -7,12 +7,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public struct RotationInfo
+public struct _RotationInfo
 { 
     public int direction;
     public int aOffset;
     public int bOffset;
-    public RotationInfo(int direction, int aOffset, int bOffset)
+    public _RotationInfo(int direction, int aOffset, int bOffset)
     {
         this.direction = direction;
         this.aOffset = aOffset;
@@ -20,9 +20,9 @@ public struct RotationInfo
     }
 }
 
-public class TetrisRotationInfo
+public class _TetrisRotationInfo
 {
-    public static IntVector[] GetData(TetriminoType type, int rotateFrom, bool isClockwise)
+    public static _IntVector[] GetData(TetriminoType type, int rotateFrom, bool isClockwise)
     {
         int rt = (isClockwise ? rotateFrom : (rotateFrom - 1)) % 4;
         int signClockwise = isClockwise ? 1 : -1;
@@ -35,12 +35,12 @@ public class TetrisRotationInfo
             case TetriminoType.L:
                 {
                     int s = signClockwise;
-                    return new IntVector[] {
-                        new IntVector(0, 0),
-                        new IntVector(s * Pos(rt, 1, 2), 0),
-                        new IntVector(s * Pos(rt, 1,2), s * Pos(rt,0,2)),
-                        new IntVector(0, 2 * s * Pos(rt, 1,3)),
-                        new IntVector(s * Pos(rt,1,2), 2 * s*Pos(rt,1,3))};
+                    return new _IntVector[] {
+                        new _IntVector(0, 0),
+                        new _IntVector(s * Pos(rt, 1, 2), 0),
+                        new _IntVector(s * Pos(rt, 1,2), s * Pos(rt,0,2)),
+                        new _IntVector(0, 2 * s * Pos(rt, 1,3)),
+                        new _IntVector(s * Pos(rt,1,2), 2 * s*Pos(rt,1,3))};
                 }
 
             case TetriminoType.I:
@@ -48,38 +48,38 @@ public class TetrisRotationInfo
                     int s = signClockwise * (rt == 0 || rt == 1 ? 1 : -1);
                     if (rt == 0 || rt == 2)
                     {
-                        return new IntVector[] {
-                        new IntVector(0, 0),
-                        new IntVector(-2 * s, 0),
-                        new IntVector(s, 0),
-                        new IntVector(-2 * s, -s),
-                        new IntVector(s, 2 * s)};
+                        return new _IntVector[] {
+                        new _IntVector(0, 0),
+                        new _IntVector(-2 * s, 0),
+                        new _IntVector(s, 0),
+                        new _IntVector(-2 * s, -s),
+                        new _IntVector(s, 2 * s)};
                     }
                     else
                     {
 
-                        return new IntVector[] {
-                        new IntVector(0, 0),
-                        new IntVector(-s, 0),
-                        new IntVector(2 * s, 0),
-                        new IntVector(-s, 2 * s),
-                        new IntVector(2 * s, -s)};
+                        return new _IntVector[] {
+                        new _IntVector(0, 0),
+                        new _IntVector(-s, 0),
+                        new _IntVector(2 * s, 0),
+                        new _IntVector(-s, 2 * s),
+                        new _IntVector(2 * s, -s)};
                     }
                 }
             case TetriminoType.O:
             default:
                 {
-                    return new IntVector[] { new IntVector(0, 0), new IntVector(0, 0), new IntVector(0, 0), new IntVector(0, 0), new IntVector(0, 0) };
+                    return new _IntVector[] { new _IntVector(0, 0), new _IntVector(0, 0), new _IntVector(0, 0), new _IntVector(0, 0), new _IntVector(0, 0) };
                 }
         }
     }
-    public static List<IntVector> RotateRaw(List<IntVector> list, TetriminoType type, int rotateFrom, bool isClockwise)
+    public static List<_IntVector> RotateRaw(List<_IntVector> list, TetriminoType type, int rotateFrom, bool isClockwise)
     {
         if (type == TetriminoType.O)
         {
             return list;
         }
-        var result = new List<IntVector>();
+        var result = new List<_IntVector>();
         int aMin = int.MaxValue, aMax = int.MinValue, bMin = int.MaxValue, bMax = int.MinValue;
         foreach (var v in list)
         {
@@ -99,7 +99,7 @@ public class TetrisRotationInfo
                 for(int i = 0; i < list.Count; i++)
                 {
                     int aExtra = (rotateFrom == 0 && isClockwise) || (rotateFrom == 2 && !isClockwise) ? 2 : 1;
-                    result.Add(new IntVector(aOffset + aExtra, bOffset + i));
+                    result.Add(new _IntVector(aOffset + aExtra, bOffset + i));
                 }
                 return result;
             }
@@ -111,7 +111,7 @@ public class TetrisRotationInfo
                 for (int i = 0; i < list.Count; i++)
                 {
                     int bExtra = (rotateFrom == 1 && isClockwise) || (rotateFrom == 3 && !isClockwise) ? 1 : 2;
-                    result.Add(new IntVector(aOffset + i, bOffset + bExtra));
+                    result.Add(new _IntVector(aOffset + i, bOffset + bExtra));
                 }
                 return result;
             }
@@ -128,7 +128,7 @@ public class TetrisRotationInfo
                 int oldB = v.b - bOffset;
                 int newA = -oldB * sign;
                 int newB = oldA * sign;
-                result.Add(new IntVector(newA + aOffset, newB + bOffset));
+                result.Add(new _IntVector(newA + aOffset, newB + bOffset));
             }
             return result;
         }

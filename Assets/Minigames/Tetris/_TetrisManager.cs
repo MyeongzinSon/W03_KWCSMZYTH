@@ -6,16 +6,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TetrisManager : MonoBehaviour
+public class _TetrisManager : MonoBehaviour
 {
     public GameObject[] tetriminoArray;
     public Transform wallParent;
     public Transform spawnTransform;
-    public TextMeshProUGUI lineUI;
-    public GameObject gameOverUI;
 
     Queue<GameObject> spawnQueue;
-    Tetrimino focused = null;
+    _Tetrimino focused = null;
     float gridOffsetX = -4.5f;
     float gridOffsetY = 8.5f;
 
@@ -27,9 +25,7 @@ public class TetrisManager : MonoBehaviour
         lines = 0;
         isGameAlive = true;
         spawnQueue = new Queue<GameObject>();
-        gameOverUI.SetActive(false);
-        TetrisGrid.Instance.Initialize();
-        UpdateLine();
+        _TetrisGrid.Instance.Initialize();
     }
 
     // Update is called once per frame
@@ -37,20 +33,19 @@ public class TetrisManager : MonoBehaviour
     {
         if (focused == null && isGameAlive)
         {
-            if (TetrisGrid.Instance.IsGameOver())
+            if (_TetrisGrid.Instance.IsGameOver())
             {
                 isGameAlive = false;
-                gameOverUI.SetActive(true);
                 return;
             }
             var newTetrimino = SpawnTetrimino();
-            focused = newTetrimino.GetComponent<Tetrimino>();
+            focused = newTetrimino.GetComponent<_Tetrimino>();
 
             Instantiate(newTetrimino, spawnTransform.position + focused.spawnOffset, spawnTransform.rotation);
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
-            TetrisGrid.Instance.PrintGrid();
+            _TetrisGrid.Instance.PrintGrid();
         }
     }
 
@@ -70,32 +65,18 @@ public class TetrisManager : MonoBehaviour
         return spawnQueue.Dequeue();
     }
 
-    public void EndControl(Tetrimino t)
+    public void EndControl(_Tetrimino t)
     {
         var minos = t.GetBlocks();
         foreach (var m in minos)
         {
             m.tag = "Wall";
-            TetrisGrid.Instance.AddBlock(m);
+            _TetrisGrid.Instance.AddBlock(m);
             m.SetParent(wallParent);
         }
         focused = null;
         Destroy(t.gameObject);
 
-        lines += TetrisGrid.Instance.CatchLine();
-        UpdateLine();
-    }
-    void MatchGrid(Transform t)
-    {
-        int gridA = Mathf.RoundToInt(t.position.y - gridOffsetY);
-        int gridB = Mathf.RoundToInt(t.position.x - gridOffsetX);
-        float x = gridB + gridOffsetX;
-        float y = gridA + gridOffsetY;
-        t.position = Vector3.right * x + Vector3.up * y;
-    }
-    
-    void UpdateLine()
-    {
-        lineUI.text = $"Lines : {lines}";
+        lines += _TetrisGrid.Instance.CatchLine();
     }
 }
