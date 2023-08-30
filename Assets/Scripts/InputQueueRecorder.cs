@@ -66,14 +66,16 @@ public class InputQueueRecorder : MonoBehaviour
         }
         else
         {
+            Debug.LogWarning($"아직 InputQueue가 완성되지 않음!");
             return null;
         }
     }
-    public void StartRecord()
+    public void StartRecord(float recordTime)
     {
         if (isRecording) { return; }
 
         isRecording = true;
+        this.recordStartTime = recordTime;
         recordStartTime = Time.time;
         foreach (var q in inputQueues)
         {
@@ -81,6 +83,10 @@ public class InputQueueRecorder : MonoBehaviour
             q.Clear();
         }
         Debug.Log($"Start Recording! : {Time.time}");
+    }
+    public void StartRecord()
+    {
+        StartRecord(recordTime);
     }
 
     public void OnInputButtonU(InputAction.CallbackContext context)
