@@ -34,20 +34,20 @@ public class Snake : MonoBehaviour
     IEnumerator UpdateSnake(float waitTime, bool isRandom) {
         yield return new WaitForSeconds(waitTime);
 
-        while (true) {
+        for (int i = 0; i < 2; i++) {
             _animator.SetTrigger("Apear");
             yield return new WaitForSeconds(0.3f);
             _boxCollider2D.enabled = true;
             _spriteRenderer.enabled = true;
             yield return new WaitForSeconds(1.3f);
             _boxCollider2D.enabled = false;
-            _animator.SetTrigger("Disappear");
+            _animator.SetTrigger("Disapear");
             yield return new WaitForSeconds(0.3f);
             _spriteRenderer.enabled = false;
             if (isRandom) {
                 yield return new WaitForSeconds(Random.Range(1.0f, 4.0f));
             } else {
-                yield return new WaitForSeconds(1.5f);
+                yield return new WaitForSeconds(.3f);
             }
         }
     }
