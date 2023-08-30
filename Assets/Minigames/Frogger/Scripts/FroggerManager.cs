@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -23,6 +25,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
     [SerializeField] private int rightBound = 8;
     [SerializeField] private int topBound = 6;
     [SerializeField] private int bottomBound = -6;
+    [SerializeField] private int winPosY = 2;
 
     private bool _hasInitialized = false;
     private List<Car> _cars = new List<Car>();
@@ -65,6 +68,8 @@ public class FroggerManager : MonoBehaviour, IInputListener
         inputDecoder = FindObjectOfType<InputQueueDecoder>();
         isPlayingIntro = false;
         needRestart = false;
+        introStartTime = Time.time;
+        gameStartTime = Time.time;
         StartIntro();
     }
 
@@ -94,8 +99,9 @@ public class FroggerManager : MonoBehaviour, IInputListener
 
             if (Time.time > gameStartTime + gameTime)
             {
-                EndGame();
-                Debug.Log($"Game cleared!");
+                OnDie();
+                //EndGame();
+                //Debug.Log($"Game cleared!");
             }
         }
 
@@ -106,7 +112,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
 
     void Init()
     {
-        frog.Init(new Vector2Int(0, bottomBound), ToWorldPos, OnDie);
+        frog.Init(new Vector2Int(0, bottomBound), ToWorldPos, OnDie, IsSafePos, winPosY, OnWin);
         _hasInitialized = true;
 
         foreach (var line in snakeGroundLines)
@@ -123,7 +129,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
                 {
                     j = i;
                 }
-                var snake = Instantiate(Resources.Load<GameObject>("Prefabs/Snake"));
+                var snake = Instantiate(Resources.Load<GameObject>("Prefabs/Snake"), this.gameObject.transform.parent);
                 snake.GetComponent<Snake>().Init(
                     new Vector3(leftBound + spacing * j, tilemap.GetCellCenterWorld(new Vector3Int(0, line.lineYPos)).y, 0),
                     line.waitTime * j,
@@ -149,6 +155,18 @@ public class FroggerManager : MonoBehaviour, IInputListener
         }
     }
 
+    bool IsSafePos(Vector2Int tilePos) {
+        if (tilePos.y > topBound || tilePos.y < bottomBound) {
+            return false;
+        }
+
+        if (tilePos.x < leftBound || tilePos.x > rightBound) {
+            return false;
+        }
+
+        return true;
+    }
+
     void RestartAndInit() {
         hasPlayedIntro = false;
         hasStartedGame = false;
@@ -157,7 +175,8 @@ public class FroggerManager : MonoBehaviour, IInputListener
         _hasInitialized = false;
         isGaming = false;
         //gameStartTime = 0f;
-        introStartTime = 0f;
+        introStartTime = Time.time;
+        gameStartTime = Time.time;
         needRestart = false;
 
         inputDecoder.Init();
@@ -166,7 +185,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
         foreach (var car in _cars) {
             Destroy(car.gameObject);
         }
-        _cars.Clear();
+        _cars = new List<Car>();
 
         StartIntro();
     }
@@ -195,11 +214,61 @@ public class FroggerManager : MonoBehaviour, IInputListener
         OnPlayerDied();
     }
 
+    void OnWin() {
+        Debug.Log("Win");
+        hasPlayedIntro = true;
+        EndGame();
+    }
+
     IEnumerator InstantiateEnemy(int lineYPos, bool isBig, float dir, GameObject prefab, float waitTime, bool isRandom)
     {
-        yield return new WaitForSeconds(waitTime);
+        if (!isBig) {
+            yield return new WaitForSeconds(waitTime);
+        }
 
         float velocity = isBig ? UnityEngine.Random.Range(2f, 4f) : UnityEngine.Random.Range(1f, 3f);
+
+        if (isBig) {
+            for (int i = 0; i < 2; i++) {
+                var carFirst = Instantiate(prefab, this.gameObject.transform.parent);
+                carFirst.GetComponent<Car>().Init(
+                    new Vector3(
+                        -7 + i * 6,
+                        tilemap.GetCellCenterWorld(new Vector3Int(0, lineYPos)).y,
+                        0
+                    ),
+                    velocity,
+                    dir,
+                    dir < 0 ?
+                        tilemap.GetCellCenterWorld(new Vector3Int(leftBound - 2, 0)).x :
+                        tilemap.GetCellCenterWorld(new Vector3Int(rightBound + 2, 0)).x,
+                    ref _cars
+                );
+            }
+        } 
+        else {
+            for (int i = 0; i < 2; i++) {
+                var carFirst = Instantiate(prefab, this.gameObject.transform.parent);
+                carFirst.GetComponent<Car>().Init(
+                    new Vector3(
+                        -3 + i * 6,
+                        tilemap.GetCellCenterWorld(new Vector3Int(0, lineYPos)).y,
+                        0
+                    ),
+                    velocity,
+                    dir,
+                    dir < 0 ?
+                        tilemap.GetCellCenterWorld(new Vector3Int(leftBound - 2, 0)).x :
+                        tilemap.GetCellCenterWorld(new Vector3Int(rightBound + 2, 0)).x,
+                    ref _cars
+                );
+            }
+        }
+
+        if (isBig) {
+            yield return new WaitForSeconds(2f);
+        }
+        
         while (true)
         {
             if (isGameOver) { yield break; }
@@ -207,7 +276,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
                 yield return null;
                 continue;
             }
-            var car = Instantiate(prefab);
+            var car = Instantiate(prefab, this.gameObject.transform.parent);
             car.GetComponent<Car>().Init(
                 new Vector3(
                     isBig ?
@@ -223,7 +292,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
                     tilemap.GetCellCenterWorld(new Vector3Int(rightBound + 2, 0)).x,
                 ref _cars
             );
-            yield return new WaitForSeconds(isRandom ? (isBig ? UnityEngine.Random.Range(4.5f, 6.5f) : UnityEngine.Random.Range(3f, 6f)) : waitTime);
+            yield return new WaitForSeconds(isRandom ? (isBig ? UnityEngine.Random.Range(6f, 8f) : UnityEngine.Random.Range(3f, 6f)) : waitTime);
         }
     }
 
@@ -284,7 +353,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
         isGaming = false;
         StopGame();
         isGameOver = true;
-        StartCoroutine(Restart());
+        //StartCoroutine(Restart());
         //Debug.Log($"isGaming = {isGaming}, bird.canMove = {bird.canMove}");
     }
 
@@ -413,7 +482,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
         if (useBufferedInput) { return; }
         if (context.started)
         {
-            frog.Move(Frog.MoveType.FrontJump);
+            //frog.Move(Frog.MoveType.FrontJump);
         }
     }
 
@@ -422,7 +491,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
         if (useBufferedInput) { return; }
         if (context.started)
         {
-            frog.Move(Frog.MoveType.BackJump);
+            //frog.Move(Frog.MoveType.BackJump);
         }
     }
 
@@ -431,7 +500,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
         if (useBufferedInput) { return; }
         if (context.started)
         {
-            frog.Move(Frog.MoveType.RightJump);
+            //frog.Move(Frog.MoveType.RightJump);
         }
     }
 
@@ -440,7 +509,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
         if (useBufferedInput) { return; }
         if (context.started)
         {
-            frog.Move(Frog.MoveType.LeftJump);
+            //frog.Move(Frog.MoveType.LeftJump);
         }
     }
 
