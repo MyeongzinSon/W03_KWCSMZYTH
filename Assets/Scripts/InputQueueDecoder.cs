@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class InputQueueDecoder : MonoBehaviour
 {
-    Queue<InputInfo> inputQueue = null;
+    int inputTypeNum;
+    Queue<InputInfo>[] inputQueues = null;
     float inputEncodedTime;
 
     IInputListener inputTarget;
@@ -12,70 +13,102 @@ public class InputQueueDecoder : MonoBehaviour
     InputButton currentInputButton;
 
     bool isDecoding = false;
+    bool[] isInputDecoding;
     float decodeStartTime;
 
-    bool CanDecode { get { return inputQueue != null; } }
+    bool CanDecode { get { return inputQueues != null; } }
 
     void Awake()
     {
+        inputTypeNum = Utility.GetEnumLength<InputButton>();
+        isInputDecoding = new bool[inputTypeNum];
         inputTarget = GetComponent<IInputListener>();
     }
     void Update()
     {
         if (isDecoding && Time.time <= decodeStartTime + inputEncodedTime)
-        { 
+        {
             var decodeTime = Time.time - decodeStartTime;
-            if (inputQueue.TryPeek(out var bufferedInfo))
+            for (int i = 0; i < inputTypeNum; i++)
             {
-                if (decodeTime >= bufferedInfo.endTime)
+                if (!isInputDecoding[i]) { continue; }
+
+                var inputQueue = inputQueues[i];
+                if (inputQueue.TryPeek(out var recordedInfo))
                 {
-                    inputQueue.Dequeue();
-                    if (inputQueue.TryPeek(out var triedInfo))
+                    if (decodeTime >= recordedInfo.endTime)
                     {
-                        bufferedInfo = triedInfo;
+                        inputQueue.Dequeue();
+                        if (inputQueue.TryPeek(out var triedInfo))
+                        {
+                            recordedInfo = triedInfo;
+                        }
+                        else
+                        {
+                            EndDecode(i);
+                            continue;
+                        }
                     }
-                    else
+                    currentInputButton = (InputButton)i;
+                    if (decodeTime >= recordedInfo.startTime && decodeTime <= recordedInfo.endTime)
                     {
-                        EndDecode();
-                        return;
+                        inputTarget.UpdateInput(currentInputButton);
                     }
                 }
-                currentInputButton = bufferedInfo.inputButton;
-                if (decodeTime >= bufferedInfo.startTime && decodeTime <= bufferedInfo.endTime)
+                else
                 {
-                    inputTarget.UpdateInput(currentInputButton);
+                    EndDecode(i);
+                    continue;
                 }
-            }
-            else
-            {
-                EndDecode();
+
             }
         }
         else
         {
-
+            EndDecode();
         }
     }
-    public void DecodeInputQueue(Queue<InputInfo> inputQueue, float inputTime)
+    public void DecodeInputQueue(Queue<InputInfo>[] inputQueue, float inputTime)
     {
-        this.inputQueue = inputQueue;
+        this.inputQueues = inputQueue;
         inputEncodedTime = inputTime;
     }
     public void StartDecode(IInputListener inputTarget)
     {
         if (CanDecode) 
         {
-            if (inputQueue.Count == 0) { return; }
+            if (inputQueues.GetTotalCount() == 0) { return; }
             if (isDecoding) { return; }
 
             this.inputTarget = inputTarget;
             isDecoding = true;
+            for (int i = 0; i < inputTypeNum; i++)
+            {
+                isInputDecoding[i] = true;
+            }
             decodeStartTime = Time.time;
         }
     }
     public void EndDecode()
     {
         isDecoding = false;
+    }
+    public void EndDecode(int inputButton)
+    {
+        isInputDecoding[inputButton] = false;
+        bool isAny = false;
 
+        foreach (var b in isInputDecoding)
+        {
+            if (b)
+            {
+                isAny = true;
+            }
+        }
+
+        if (!isAny)
+        {
+            EndDecode();
+        }
     }
 }

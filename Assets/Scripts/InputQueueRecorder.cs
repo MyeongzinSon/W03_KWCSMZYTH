@@ -7,20 +7,18 @@ using UnityEngine.InputSystem;
 public enum InputButton { U, D, R, L, A, B }
 public class InputInfo
 {
-    public InputButton inputButton;
     public float startTime;
     public float endTime;
 
-    public InputInfo(InputButton button, float start, float end)
+    public InputInfo(float start, float end)
     {
-        inputButton = button;
         startTime = start;
         endTime = end;
     }
 
     public override string ToString()
     {
-        return $"({inputButton.ToString()}, {endTime - startTime})";
+        return $"({startTime}, {endTime})";
     }
 }
 
@@ -28,9 +26,10 @@ public class InputQueueRecorder : MonoBehaviour
 {
     [SerializeField] float recordTime;
 
-    Queue<InputInfo> inputQueue;
-    int currentInput;
-    float currentStartTime;
+    int inputTypeNum;
+    Queue<InputInfo>[] inputQueues;
+    float[] currentStartTime;
+    bool[] isInputing;
     float recordStartTime;
     bool isRecording;
 
@@ -38,10 +37,18 @@ public class InputQueueRecorder : MonoBehaviour
 
     private void Awake()
     {
+        inputTypeNum = Utility.GetEnumLength<InputButton>();
         recordStartTime = 0;
-        inputQueue = new Queue<InputInfo>();
-        currentInput = -1;
-        isRecording = false;
+        inputQueues = new Queue<InputInfo>[inputTypeNum];
+        currentStartTime = new float[inputTypeNum];
+        isInputing = new bool[inputTypeNum];
+        for (int i = 0; i < inputTypeNum; i++)
+        {
+            inputQueues[i] = new Queue<InputInfo>();
+            currentStartTime[i] = 0;
+            isInputing[i] = false;
+        }
+        isRecording = false;;
     }
     private void Update()
     {
@@ -51,11 +58,11 @@ public class InputQueueRecorder : MonoBehaviour
         }
     }
 
-    public Queue<InputInfo> GetInputQueue()
+    public Queue<InputInfo>[] GetInputQueues()
     {
         if (!isRecording)
         {
-            return inputQueue;
+            return inputQueues;
         }
         else
         {
@@ -68,7 +75,11 @@ public class InputQueueRecorder : MonoBehaviour
 
         isRecording = true;
         recordStartTime = Time.time;
-        inputQueue.Clear();
+        foreach (var q in inputQueues)
+        {
+            Debug.Log(q.Count);
+            q.Clear();
+        }
         Debug.Log($"Start Recording! : {Time.time}");
     }
 
@@ -115,40 +126,50 @@ public class InputQueueRecorder : MonoBehaviour
     {
         if (!isRecording) { return; }
         
-        if (currentInput != -1)
+        for (int i = 0; i < inputTypeNum; i++)
         {
-            EndRecordButton((InputButton)currentInput);
+            EndRecordButton((InputButton)i);
         }
         isRecording = false;
         recordStartTime = 0;
 
-        Debug.Log($"End Recording! : {Time.time}");
-        Debug.Log($"Queue Count = {inputQueue.Count}");
-        foreach (var i in inputQueue)
+        int inputCount = 0;
+        foreach (var q in inputQueues)
         {
-            Debug.Log($"{i.ToString()}");
+            inputCount += q.Count;
+        }
+
+        Debug.Log($"End Recording! : {Time.time}");
+        Debug.Log($"Queue Count = {inputQueues.GetTotalCount()}");
+        for (int i = 0; i < inputTypeNum; i++)
+        {
+            foreach (var input in inputQueues[i])
+            {
+                Debug.Log($"{(InputButton)i}, {input}");
+            }
         }
     }
 
     void StartRecordButton(InputButton inputButton)
     {
-        if (currentInput != -1) { return; }
+        var index = (int)inputButton;
+        if (isInputing[index]) { return; }
 
-        currentInput = (int)inputButton;
-        currentStartTime = Time.time;
-
+        isInputing[index] = true;
+        currentStartTime[index] = Time.time;
     }
     void EndRecordButton(InputButton inputButton)
     {
-        if (currentInput != (int)inputButton) { return; }
+        var index = (int)inputButton;
+        if (!isInputing[index]) { return; }
 
-        var start = currentStartTime - recordStartTime;
+        var start = currentStartTime[index] - recordStartTime;
         var end = Time.time - recordStartTime;
-        var newInputInfo = new InputInfo(inputButton, start, end);
-        inputQueue.Enqueue(newInputInfo);
+        var newInputInfo = new InputInfo(start, end);
+        inputQueues[index].Enqueue(newInputInfo);
 
-        Debug.Log($"EndRecordButton : {newInputInfo.ToString()}");
-        currentInput = -1;
+        Debug.Log($"EndRecordButton : {inputButton}, {newInputInfo}");
+        isInputing[index] = false;
     }
 
 }

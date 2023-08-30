@@ -21,7 +21,7 @@ public class temp_Player : MonoBehaviour, IInputListener
     }
     public void OnDecode()
     {
-        var queue = inputRecorder.GetInputQueue();
+        var queue = inputRecorder.GetInputQueues();
         var time = inputRecorder.RecordTime;
         inputDecoder.DecodeInputQueue(queue, time);
         inputDecoder.StartDecode(this);
