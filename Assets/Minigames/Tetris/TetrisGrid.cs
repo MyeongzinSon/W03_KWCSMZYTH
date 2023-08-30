@@ -40,11 +40,11 @@ public class TetrisGrid
     }
 
     private const int aAxis = 10;
-    private const int bAxis = 22;
+    private const int bAxis = 9;
     Transform[,] grid = new Transform[aAxis, bAxis];
 
-    float worldOffsetX = 8.5f;
-    float worldOffsetY = -4.5f;
+    float worldOffsetX = -5.5f;
+    float worldOffsetY = -3.5f;
 
     public void Initialize()
     {
@@ -183,18 +183,35 @@ public class TetrisGrid
             return false;
         }
     }
+    public bool IsEmptyLine(int b)
+    {
+        if (b < 0 || b >= bAxis)
+        {
+            Debug.LogWarning($"블록 라인이 격자의 경계값을 넘어감! : {b}");
+            return false;
+        }
+
+        for (int a = 0; a < aAxis; a++)
+        {
+            if (grid[a, b] != null)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     IntVector GetGrid(Transform t)
     {
-        int gridA = Mathf.RoundToInt(t.position.y - worldOffsetY);
-        int gridB = -Mathf.RoundToInt(t.position.x - worldOffsetX);
+        int gridA = Mathf.RoundToInt(t.position.x - worldOffsetX);
+        int gridB = -Mathf.RoundToInt(t.position.y - worldOffsetY);
         //Debug.Log($"GetGrid : [{gridA},{gridB}]");
         return new IntVector(gridA, gridB);
     }
 
     Vector3 GridToPosition(IntVector v)
     {
-        float x = -v.b + worldOffsetX;
-        float y = v.a + worldOffsetY;
+        float x = v.a + worldOffsetX;
+        float y = v.b + worldOffsetY;
         return Vector3.right * x + Vector3.up * y;
     }
 
@@ -278,8 +295,8 @@ public class TetrisGrid
     public bool IsGameOver()
     {
         return false;
-        
-        //return !IsEmptyGrid(7, 20);
+
+        return !IsEmptyGrid(7, 20);
     }
 
     string PrintList(List<IntVector> list)

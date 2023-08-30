@@ -10,7 +10,7 @@ public class Tetrimino : MonoBehaviour
     public Vector3 spawnOffset;
 
     Rigidbody2D rb;
-    GameManager gameManager;
+    TetrisManager gameManager;
 
     public float scrollSpeed = 1;
     public float manualSpeed = 0.5f;
@@ -28,7 +28,7 @@ public class Tetrimino : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        gameManager = FindObjectOfType<GameManager>();
+        gameManager = FindObjectOfType<TetrisManager>();
     }
 
     // Update is called once per frame
