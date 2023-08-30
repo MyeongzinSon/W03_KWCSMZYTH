@@ -1,11 +1,19 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Minigames.Mario.Scripts
 {
     public class MarioPlayer : MonoBehaviour, IInputListener
     {
+        #region InputQueue
+
+        private InputQueueRecorder _inputRecorder;
+        private InputQueueDecoder _inputDecoder;
+
+        #endregion
+        
         #region Components
         
         public CharacterJump characterJump;
@@ -14,36 +22,47 @@ namespace Minigames.Mario.Scripts
         
         #endregion
         
-        public bool isDirectInput = false;
         [Header("Inputs")]
+        private bool _isInputU;
+        private bool _wasInputU;
+        private bool _wasInputUTurnedThisFrame;
+        private bool _isInputD;
+        private bool _wasInputD;
+        private bool _wasInputDTurnedThisFrame;
+        private bool _isInputR;
+        private bool _wasInputR;
+        private bool _wasInputRTurnedThisFrame;
+        private bool _isInputL;
+        private bool _wasInputL;
+        private bool _wasInputLTurnedThisFrame;
         private bool _isInputA;
         private bool _wasInputA;
         private bool _wasInputATurnedThisFrame;
         private bool _isInputB;
         private bool _wasInputB;
         private bool _wasInputBTurnedThisFrame;
+        
         [Header("States")]
         private bool _isStart;
         private bool _isIntro;
         private bool _isPractice;
         private bool _isRecording;
         private bool _isPlaying;
+        
         [Header("Games")]
-        public float baseSpeed = 1.0f;
-        //public Text timerText;
-        //public Text winText;
-        public float buttonPressInterval = 0.1f;
-        public float speedDecayFactor = 0.99f;
-        private bool _isOnStartLine;
+        public bool useBufferedInput;
+        public float introTime;
+        public float gameTime;
+        
+        private bool _hasPlayedIntro = false;
+        private float _introStartTime;
+        
+        private bool _isGaming;
+        private float _gameStartTime;
+        private bool _hasStartedGame = false;
+        
         [Header("Coroutines")]
         private IEnumerator _introCoroutine;
-        private IEnumerator _moveToStartLineCoroutine;
-
-        private float startTime;
-        private bool isRunning = false;
-        private int buttonPressCount = 10;
-        private float lastButtonPressTime;
-        private float currentSpeed;
 
         #region AnimHash
         private static readonly int GoToMark = Animator.StringToHash("GoToMark");
@@ -55,6 +74,8 @@ namespace Minigames.Mario.Scripts
 
         private void Awake()
         {
+            _inputRecorder = FindObjectOfType<InputQueueRecorder>();
+            _inputDecoder = FindObjectOfType<InputQueueDecoder>();
         }
 
         void Start()
@@ -62,61 +83,187 @@ namespace Minigames.Mario.Scripts
             characterJump = GetComponent<CharacterJump>();
             characterMovement = GetComponent<CharacterMovement>();
             Anim = transform.GetComponent<Animator>();
-            
-            //winText.text = "";
-            //timerText.text = "Press Space to start!";
-            currentSpeed = baseSpeed;
 
             _isStart = false;
             _isIntro = false;
             _isPlaying = false;
             _isRecording = false;
 
-            _isOnStartLine = false;
+            StartIntro();
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if (!_hasPlayedIntro && Time.time > _introStartTime + introTime)
             {
-                _isStart = true;
+                EndIntro();
             }
-            
-            #region Game States
+            else if (useBufferedInput && Time.time > _introStartTime + introTime + gameTime && !_hasStartedGame)
+            {
+                if (TryDecode())
+                {
+                    StartGame();
+                }
+            }
 
-            if (_isStart)
+            if (_isGaming || !_hasPlayedIntro)
             {
-                _isStart = false;
-                _isIntro = true;
-            }
-            if (_isIntro)
-            {
+                CheckUpdateRight();
+                CheckUpdateLeft();
+                CheckUpdateA();
                 
-            }
-            if (_isPractice)
-            {
+                // 조기 종료 체크
                 
+                if (Time.time > _gameStartTime + gameTime)
+                {
+                    EndGame();
+                    // 종료 체크
+                    Debug.Log($"Game cleared!");
+                }
             }
-            if (_isRecording)
-            {
-                
-            }
-            if (_isPlaying)
-            {
-                CheckUpdateB();
-            }
-            
-            #endregion
+        }
+
+        #region Game States
+        
+        // 연습모드 시작
+        void StartIntro()
+        {
+            _introStartTime = Time.time;
+            movementLimiter.instance.CharacterCanMove = true;
+            useBufferedInput = false;
+        }
+        void EndIntro()
+        {
+            _hasPlayedIntro = true;
+            movementLimiter.instance.CharacterCanMove = false;
+            useBufferedInput = true;
+            OnRecord();
+        }
+        
+        // 녹화된 입력을 재생
+        void StartGame()
+        {
+            _gameStartTime = Time.time;
+            _isGaming = true;
+            movementLimiter.instance.CharacterCanMove = true;
+            _hasStartedGame = true;
+        }
+        void EndGame()
+        {
+            _isGaming = false;
+            movementLimiter.instance.CharacterCanMove = false;
+        }
+
+        #endregion
+        
+        
+        
+        public void OnPlayerDied()
+        {
+            _hasPlayedIntro = true;
+            EndGame();
+            Debug.Log($"Player died...");
+        }
+
+        public void OnRecord()
+        {
+            if (!useBufferedInput) { return; }
+            _inputRecorder.StartRecord(gameTime);
+        }
+        public bool TryDecode()
+        {
+            if (!useBufferedInput) { return false; }
+        
+            var queue = _inputRecorder.GetInputQueues();
+        
+            if (queue == null) { return false; }
+
+            var time = _inputRecorder.RecordTime;
+            _inputDecoder.DecodeInputQueue(queue, time);
+            _inputDecoder.StartDecode(this);
+
+            return true;
         }
 
         #region InputListner
 
         public void UpdateUp() { }
         public void UpdateDown() { }
-        public void UpdateRight() { }
-        public void UpdateLeft() { }
-        public void UpdateA() { }
-        void CheckUpdateA() { }
+
+        public void UpdateRight()
+        {
+            characterMovement.directionX = 1;
+        }
+        void CheckUpdateRight()
+        {
+            if (_isInputR && _wasInputRTurnedThisFrame)
+            {
+                _wasInputR = true;
+                //Debug.Log($"L KeyDown");
+                characterMovement.directionX = 1;
+            }
+
+            if (_wasInputR && !_isInputR)
+            {
+                _wasInputR = false;
+                //Debug.Log($"L KeyUp");
+                characterMovement.directionX = 0;
+            }
+            _isInputR = false;
+            _wasInputRTurnedThisFrame = false;
+        }
+
+        public void UpdateLeft()
+        {
+            characterMovement.directionX = -1;
+        }
+        void CheckUpdateLeft()
+        {
+            if (_isInputL && _wasInputLTurnedThisFrame)
+            {
+                _wasInputL = true;
+                //Debug.Log($"L KeyDown");
+                characterMovement.directionX = -1;
+            }
+
+            if (_wasInputL && !_isInputL)
+            {
+                _wasInputL = false;
+                //Debug.Log($"L KeyUp");
+                characterMovement.directionX = 0;
+            }
+            _isInputL = false;
+            _wasInputLTurnedThisFrame = false;
+        }
+
+        public void UpdateA()
+        {
+            if (!_wasInputA)
+            {
+                _wasInputATurnedThisFrame = true;
+            }
+            _isInputA = true;
+        }
+
+        void CheckUpdateA()
+        {
+            if (_isInputA && _wasInputATurnedThisFrame)
+            {
+                _wasInputA = true;
+                //Debug.Log($"A KeyDown");
+                characterJump.desiredJump = true;
+                characterJump.pressingJump = true;
+            }
+
+            if (_wasInputA && !_isInputA)
+            {
+                _wasInputA = false;
+                //Debug.Log($"A KeyUp");
+                characterJump.pressingJump = false;
+            }
+            _isInputA = false;
+            _wasInputATurnedThisFrame = false;
+        }
         public void UpdateB() { }
         void CheckUpdateB() { }
 
@@ -124,34 +271,56 @@ namespace Minigames.Mario.Scripts
 
         #region DirectInput
         
-        public void OnUpInput(InputAction.CallbackContext context) { if (!isDirectInput) return; }
-        public void OnDownInput(InputAction.CallbackContext context) { if (!isDirectInput) return; }
+        public void OnUpInput(InputAction.CallbackContext context) { if (useBufferedInput) return; }
+        public void OnDownInput(InputAction.CallbackContext context) { if (useBufferedInput) return; }
 
         public void OnLeftInput(InputAction.CallbackContext context)
         {
-            if (!isDirectInput) return;
+            if (useBufferedInput) return;
             
-            //This is called when you input a direction on a valid input type, such as arrow keys or analogue stick
-            //The value will read -1 when pressing left, 0 when idle, and 1 when pressing right.
-            if (movementLimiter.instance.CharacterCanMove) {
-                characterMovement.directionX = -1 * context.ReadValue<float>();
+            //This function is called when one of the left buttons is pressed.
+            
+            if (movementLimiter.instance.CharacterCanMove)
+            {
+                //This is called when you input a direction on a valid input type, such as arrow keys or analogue stick
+                //The value will read -1 when pressing left, 0 when idle, and 1 when pressing right.
+                if (context.started)
+                {
+                    characterMovement.directionX = -1;//context.ReadValue<float>();
+                }
+
+                if (context.canceled)
+                {
+                    characterMovement.directionX = 0;
+                }
             }
         }
 
         public void OnRightInput(InputAction.CallbackContext context)
         {
-            if (!isDirectInput) return;
+            if (useBufferedInput) return;
             
-            //This is called when you input a direction on a valid input type, such as arrow keys or analogue stick
-            //The value will read -1 when pressing left, 0 when idle, and 1 when pressing right.
-            if (movementLimiter.instance.CharacterCanMove) {
-                characterMovement.directionX = context.ReadValue<float>();
+            //This function is called when one of the right buttons is pressed.
+            
+            if (movementLimiter.instance.CharacterCanMove)
+            {
+                //This is called when you input a direction on a valid input type, such as arrow keys or analogue stick
+                //The value will read -1 when pressing left, 0 when idle, and 1 when pressing right.
+                if (context.started)
+                {
+                    characterMovement.directionX = 1;//context.ReadValue<float>();
+                }
+
+                if (context.canceled)
+                {
+                    characterMovement.directionX = 0;
+                }
             }
         }
         
         public void OnAInput(InputAction.CallbackContext context)
         {
-            if (!isDirectInput) return;
+            if (useBufferedInput) return;
             
             //This function is called when one of the jump buttons (like space or the A button) is pressed.
 
@@ -174,7 +343,7 @@ namespace Minigames.Mario.Scripts
         
         public void OnBInput(InputAction.CallbackContext context)
         {
-            if (!isDirectInput) return;
+            if (useBufferedInput) return;
             
             // SpeedMultiplier?
         }

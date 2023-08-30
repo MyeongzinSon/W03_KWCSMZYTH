@@ -189,7 +189,7 @@ SpriteRenderer:
   m_Size: {x: 11.27, y: 6.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &10698501
@@ -1102,9 +1102,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterJump: {fileID: 0}
   characterMovement: {fileID: 0}
-  baseSpeed: 1
-  buttonPressInterval: 0.1
-  speedDecayFactor: 0.99
+  useBufferedInput: 0
+  introTime: 3
+  gameTime: 5
 --- !u!114 &685118721
 MonoBehaviour:
   m_ObjectHideFlags: 0
