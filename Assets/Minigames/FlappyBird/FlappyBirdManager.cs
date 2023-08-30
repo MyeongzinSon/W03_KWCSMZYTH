@@ -12,55 +12,43 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
 
     BirdController bird;
     WallController[] walls;
+    InputQueueRecorder inputRecorder;
+    InputQueueDecoder inputDecoder;
 
     bool hasPlayedIntro = false;
     float introStartTime;
     bool isGaming;
     float gameStartTime;
-    bool hasPlayedGame = false;
+    bool hasStartedGame = false;
 
     bool isInputA;
     bool wasInputA;
     bool wasInputATurnedThisFrame;
 
-
-    void Start()
+    void Awake()
     {
         bird = FindObjectOfType<BirdController>();
         walls = FindObjectsOfType<WallController>();
-
+        inputRecorder = FindObjectOfType<InputQueueRecorder>();
+        inputDecoder = FindObjectOfType<InputQueueDecoder>();
+    }
+    void Start()
+    {
         bird.Initialize(this);
         StartIntro();
     }
-    public void OnInputA(InputAction.CallbackContext context)
-    {
-        if (useBufferedInput) { return; }
-
-        if (context.started)
-        {
-            OnADown();
-        }
-        if (context.canceled)
-        {
-            OnAUp();
-        }
-    }
-    public void OnInputStart(InputAction.CallbackContext context)
-    {
-        if (useBufferedInput) { return; }
-
-        if (hasPlayedIntro && !isGaming && !hasPlayedGame)
-        {
-            StartGame();
-        }
-
-    }
-
     void Update()
     {
         if (!hasPlayedIntro && Time.time > introStartTime + introTime)
         {
             EndIntro();
+        }
+        else if (useBufferedInput && Time.time > introStartTime + introTime + gameTime && !hasStartedGame)
+        {
+            if (TryDecode())
+            {
+                StartGame();
+            }
         }
 
         if (isGaming || !hasPlayedIntro)
@@ -81,9 +69,31 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
 
     public void OnPlayerDied()
     {
+        hasPlayedIntro = true;
         EndGame();
         Debug.Log($"Player died...");
     }
+
+    public void OnRecord()
+    {
+        if (!useBufferedInput) { return; }
+        inputRecorder.StartRecord(gameTime);
+    }
+    public bool TryDecode()
+    {
+        if (!useBufferedInput) { return false; }
+        
+        var queue = inputRecorder.GetInputQueues();
+        
+        if (queue == null) { return false; }
+
+        var time = inputRecorder.RecordTime;
+        inputDecoder.DecodeInputQueue(queue, time);
+        inputDecoder.StartDecode(this);
+
+        return true;
+    }
+
     void IInputListener.UpdateA()
     {
         if (!wasInputA)
@@ -128,22 +138,26 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
         gameStartTime = Time.time;
         isGaming = true;
         bird.canMove = true;
+        hasStartedGame = true;
     }
     void EndGame()
     {
         isGaming = false;
         bird.canMove = false;
-        hasPlayedGame = true;
+        Debug.Log($"isGaming = {isGaming}, bird.canMove = {bird.canMove}");
     }
     void StartIntro()
     {
         introStartTime = Time.time;
         bird.canMove = true;
+        useBufferedInput = false;
     }
     void EndIntro()
     {
         hasPlayedIntro = true;
         bird.canMove = false;
+        useBufferedInput = true;
+        OnRecord();
     }
     void IInputListener.UpdateB()
     {
@@ -169,4 +183,33 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
     {
 
     }
+    public void OnInputA(InputAction.CallbackContext context)
+    {
+        if (useBufferedInput) 
+        { 
+            inputRecorder.OnInputButtonA(context); 
+        }
+        else
+        {
+            if (context.started)
+            {
+                OnADown();
+            }
+            if (context.canceled)
+            {
+                OnAUp();
+            }
+        }
+    }
+    public void OnInputStart(InputAction.CallbackContext context)
+    {
+        if (useBufferedInput) { return; }
+
+        if (hasPlayedIntro && !isGaming && !hasStartedGame)
+        {
+            StartGame(); 
+        }
+
+    }
+
 }

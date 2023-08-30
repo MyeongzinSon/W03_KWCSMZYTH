@@ -17,7 +17,7 @@ public class BirdController : MonoBehaviour
     public void Initialize(FlappyBirdManager manager)
     {
         this.manager = manager;
-        speedY = gravity / 2;
+        speedY = gravity;
     }
 
 
@@ -27,13 +27,9 @@ public class BirdController : MonoBehaviour
         
         transform.Translate(Vector2.up * speedY * Time.deltaTime);
 
-        if (transform.position.y < -5)
+        if (transform.position.y > 5.5)
         {
-            transform.Translate(Vector2.up * 10);
-        }
-        else if (transform.position.y > 5)
-        {
-            transform.Translate(Vector2.down * 10);
+            transform.Translate(Vector2.down * (transform.position.y - 5.5f));
         }
     }
 
