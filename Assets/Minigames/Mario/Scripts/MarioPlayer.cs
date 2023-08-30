@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,6 +42,9 @@ namespace Minigames.Mario.Scripts
         private bool _isInputB;
         private bool _wasInputB;
         private bool _wasInputBTurnedThisFrame;
+
+        private bool _isPressedR;
+        private bool _isPressedL;
         
         [Header("States")]
         private bool _isStart;
@@ -48,8 +52,14 @@ namespace Minigames.Mario.Scripts
         private bool _isPractice;
         private bool _isRecording;
         private bool _isPlaying;
-        
+
         [Header("Games")]
+        [SerializeField] private bool isClear;
+
+        private Vector3 _startPosition;
+
+        [SerializeField] private GameObject startBoundary;
+        
         public bool useBufferedInput;
         public float introTime;
         public float gameTime;
@@ -60,6 +70,7 @@ namespace Minigames.Mario.Scripts
         private bool _isGaming;
         private float _gameStartTime;
         private bool _hasStartedGame = false;
+        
         
         [Header("Coroutines")]
         private IEnumerator _introCoroutine;
@@ -84,12 +95,24 @@ namespace Minigames.Mario.Scripts
             characterMovement = GetComponent<CharacterMovement>();
             Anim = transform.GetComponent<Animator>();
 
+            _startPosition = transform.position;
+
+            _introStartTime = Time.time;
+            _gameStartTime = Time.time;
+
             _isStart = false;
             _isIntro = false;
             _isPlaying = false;
             _isRecording = false;
 
-            StartIntro();
+            _hasPlayedIntro = false;
+            _hasStartedGame = false;
+
+            isClear = false;
+            
+            startBoundary.SetActive(true);
+
+            OnSelectGame();
         }
 
         void Update()
@@ -108,6 +131,7 @@ namespace Minigames.Mario.Scripts
 
             if (_isGaming || !_hasPlayedIntro)
             {
+                Debug.Log("C1");
                 CheckUpdateRight();
                 CheckUpdateLeft();
                 CheckUpdateA();
@@ -116,14 +140,37 @@ namespace Minigames.Mario.Scripts
                 
                 if (Time.time > _gameStartTime + gameTime)
                 {
-                    EndGame();
-                    // 종료 체크
-                    Debug.Log($"Game cleared!");
+                    Debug.Log("C2");
+                    OnPlayerDied();
                 }
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                OnSelectGame();
             }
         }
 
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.gameObject.CompareTag("ClearGame"))
+            {
+                OnPlayerClear();
+            }
+
+            if (other.gameObject.CompareTag("OverGame"))
+            {
+                OnPlayerDied();
+            }
+        }
+
+        public void OnSelectGame()
+        {
+            StartIntro();
+        }
+
         #region Game States
+        
         
         // 연습모드 시작
         void StartIntro()
@@ -131,6 +178,7 @@ namespace Minigames.Mario.Scripts
             _introStartTime = Time.time;
             movementLimiter.instance.CharacterCanMove = true;
             useBufferedInput = false;
+            startBoundary.SetActive(true);
         }
         void EndIntro()
         {
@@ -138,6 +186,7 @@ namespace Minigames.Mario.Scripts
             movementLimiter.instance.CharacterCanMove = false;
             useBufferedInput = true;
             OnRecord();
+            startBoundary.SetActive(false);
         }
         
         // 녹화된 입력을 재생
@@ -152,11 +201,31 @@ namespace Minigames.Mario.Scripts
         {
             _isGaming = false;
             movementLimiter.instance.CharacterCanMove = false;
+            Debug.Log("CLEAR? : " + isClear);
+            //ResetGame();
+        }
+
+        void ResetGame()
+        {
+            transform.position = _startPosition;
+            
+            _isStart = false;
+            _isIntro = false;
+            _isPlaying = false;
+            _isRecording = false;
+
+            isClear = false;
+            startBoundary.SetActive(true);
         }
 
         #endregion
-        
-        
+
+
+        public void OnPlayerClear()
+        {
+            isClear = true;
+            EndGame();
+        }
         
         public void OnPlayerDied()
         {
@@ -274,28 +343,6 @@ namespace Minigames.Mario.Scripts
         public void OnUpInput(InputAction.CallbackContext context) { if (useBufferedInput) return; }
         public void OnDownInput(InputAction.CallbackContext context) { if (useBufferedInput) return; }
 
-        public void OnLeftInput(InputAction.CallbackContext context)
-        {
-            if (useBufferedInput) return;
-            
-            //This function is called when one of the left buttons is pressed.
-            
-            if (movementLimiter.instance.CharacterCanMove)
-            {
-                //This is called when you input a direction on a valid input type, such as arrow keys or analogue stick
-                //The value will read -1 when pressing left, 0 when idle, and 1 when pressing right.
-                if (context.started)
-                {
-                    characterMovement.directionX = -1;//context.ReadValue<float>();
-                }
-
-                if (context.canceled)
-                {
-                    characterMovement.directionX = 0;
-                }
-            }
-        }
-
         public void OnRightInput(InputAction.CallbackContext context)
         {
             if (useBufferedInput) return;
@@ -308,12 +355,54 @@ namespace Minigames.Mario.Scripts
                 //The value will read -1 when pressing left, 0 when idle, and 1 when pressing right.
                 if (context.started)
                 {
-                    characterMovement.directionX = 1;//context.ReadValue<float>();
+                    _isPressedR = true;
+                    characterMovement.directionX = 1f;
+                }
+
+                if (context.performed)
+                {
+                    characterMovement.directionX = 1f;
                 }
 
                 if (context.canceled)
                 {
-                    characterMovement.directionX = 0;
+                    _isPressedR = false;
+                    if (!_isPressedL)
+                    {
+                        characterMovement.directionX = 0;
+                    }
+                }
+            }
+        }
+        
+        public void OnLeftInput(InputAction.CallbackContext context)
+        {
+            if (useBufferedInput) return;
+            
+            //This function is called when one of the left buttons is pressed.
+            
+            if (movementLimiter.instance.CharacterCanMove)
+            {
+                //This is called when you input a direction on a valid input type, such as arrow keys or analogue stick
+                //The value will read -1 when pressing left, 0 when idle, and 1 when pressing right.
+                if (context.started)
+                {
+                    _isPressedL = true;
+                    characterMovement.directionX = -1f;
+                }
+                
+                if (context.performed)
+                {
+                    characterMovement.directionX = -1f;
+                }
+
+                if (context.canceled)
+                {
+                    _isPressedL = false;
+                    if (!_isPressedR)
+                    {
+                        characterMovement.directionX = 0;
+                    }
                 }
             }
         }
