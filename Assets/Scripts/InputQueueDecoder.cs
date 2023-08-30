@@ -7,7 +7,7 @@ public class InputQueueDecoder : MonoBehaviour
     Queue<InputInfo> inputQueue = null;
     float inputEncodedTime;
 
-    IBufferedInput inputTarget;
+    IInputListener inputTarget;
     InputInfo currentInputInfo;
     InputButton currentInputButton;
 
@@ -18,7 +18,7 @@ public class InputQueueDecoder : MonoBehaviour
 
     void Awake()
     {
-        inputTarget = GetComponent<IBufferedInput>();
+        inputTarget = GetComponent<IInputListener>();
     }
     void Update()
     {
@@ -43,7 +43,7 @@ public class InputQueueDecoder : MonoBehaviour
                 currentInputButton = bufferedInfo.inputButton;
                 if (decodeTime >= bufferedInfo.startTime && decodeTime <= bufferedInfo.endTime)
                 {
-                    inputTarget.OnBufferedInput(currentInputButton);
+                    inputTarget.UpdateInput(currentInputButton);
                 }
             }
             else
@@ -61,7 +61,7 @@ public class InputQueueDecoder : MonoBehaviour
         this.inputQueue = inputQueue;
         inputEncodedTime = inputTime;
     }
-    public void StartDecode(IBufferedInput inputTarget)
+    public void StartDecode(IInputListener inputTarget)
     {
         if (CanDecode) 
         {

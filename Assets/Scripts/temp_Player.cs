@@ -2,57 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class temp_Player : MonoBehaviour, IBufferedInput
+public class temp_Player : MonoBehaviour, IInputListener
 {
     public float speed;
 
-    InputBuffer inputBuffer;
+    InputQueueRecorder inputRecorder;
     InputQueueDecoder inputDecoder;
 
     void Awake()
     {
-        inputBuffer = FindObjectOfType<InputBuffer>();
+        inputRecorder = FindObjectOfType<InputQueueRecorder>();
         inputDecoder = GetComponent<InputQueueDecoder>();
     }
 
     public void OnRecord()
     {
-        inputBuffer.StartRecord();
+        inputRecorder.StartRecord();
     }
     public void OnDecode()
     {
-        var queue = inputBuffer.GetInputQueue();
-        var time = inputBuffer.RecordTime;
+        var queue = inputRecorder.GetInputQueue();
+        var time = inputRecorder.RecordTime;
         inputDecoder.DecodeInputQueue(queue, time);
         inputDecoder.StartDecode(this);
     }
 
-    void IBufferedInput.OnA(bool isPressed)
+    void IInputListener.UpdateA()
     {
         Debug.Log($"A pressed! : {Time.time}");
     }
 
-    void IBufferedInput.OnB(bool isPressed)
+    void IInputListener.UpdateB()
     {
         Debug.Log($"B pressed! : {Time.time}");
     }
 
-    void IBufferedInput.OnDown(bool isPressed)
+    void IInputListener.UpdateDown()
     {
         transform.Translate(Vector2.down * speed * Time.deltaTime);
     }
 
-    void IBufferedInput.OnLeft(bool isPressed)
+    void IInputListener.UpdateLeft()
     {
         transform.Translate(Vector2.left * speed * Time.deltaTime);
     }
 
-    void IBufferedInput.OnRight(bool isPressed)
+    void IInputListener.UpdateRight()
     {
         transform.Translate(Vector2.right * speed * Time.deltaTime);
     }
 
-    void IBufferedInput.OnUp(bool isPressed)
+    void IInputListener.UpdateUp()
     {
         transform.Translate(Vector2.up * speed * Time.deltaTime);
     }
