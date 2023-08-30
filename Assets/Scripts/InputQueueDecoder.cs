@@ -21,9 +21,14 @@ public class InputQueueDecoder : MonoBehaviour
     void Awake()
     {
         inputTypeNum = Utility.GetEnumLength<InputButton>();
-        isInputDecoding = new bool[inputTypeNum];
         inputTarget = GetComponent<IInputListener>();
+        Init();
     }
+
+    public void Init() {
+        isInputDecoding = new bool[inputTypeNum];
+    }
+
     void Update()
     {
         if (isDecoding && Time.time <= decodeStartTime + inputEncodedTime)
