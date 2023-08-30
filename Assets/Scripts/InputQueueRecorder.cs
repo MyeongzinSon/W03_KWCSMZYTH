@@ -37,6 +37,10 @@ public class InputQueueRecorder : MonoBehaviour
 
     private void Awake()
     {
+        Init();
+    }
+
+    public void Init() {
         inputTypeNum = Utility.GetEnumLength<InputButton>();
         recordStartTime = 0;
         inputQueues = new Queue<InputInfo>[inputTypeNum];
@@ -50,6 +54,7 @@ public class InputQueueRecorder : MonoBehaviour
         }
         isRecording = false;;
     }
+
     private void Update()
     {
         if (isRecording && Time.time >= recordStartTime + recordTime )
@@ -75,7 +80,7 @@ public class InputQueueRecorder : MonoBehaviour
         if (isRecording) { return; }
 
         isRecording = true;
-        this.recordStartTime = recordTime;
+        this.recordTime = recordTime;
         recordStartTime = Time.time;
         foreach (var q in inputQueues)
         {

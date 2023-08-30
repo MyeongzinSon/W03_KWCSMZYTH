@@ -59,10 +59,12 @@ public class Frog : MonoBehaviour
     }
 
     public void Init(Vector2Int position, Func<Vector2Int, Vector2> toWorldPosFunc, Action onDie) {
+        _animator = GetComponent<Animator>();
         _animator.SetTrigger(FrogParameter.AnimTrigger(MoveType.Start));
         _initPosition = position;
         _toWorldPosFunc = toWorldPosFunc;
         _onDie = onDie;
+        _isDie = false;
 
         SetPosition(_initPosition);
     }
@@ -74,7 +76,6 @@ public class Frog : MonoBehaviour
     }
 
     public void Die() {
-        _isDie = true;
         StartCoroutine(FrogDie());
         _onDie();       
     }
@@ -114,7 +115,8 @@ public class Frog : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if (other.CompareTag("Enemy")) {
+        if (other.CompareTag("Enemy") && !_isDie) {
+            _isDie = true;
             Debug.Log("Die");
             Die();
         }
