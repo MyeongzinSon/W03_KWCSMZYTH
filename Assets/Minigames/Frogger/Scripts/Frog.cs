@@ -46,8 +46,12 @@ public class Frog : MonoBehaviour
     private Vector2Int _initPosition;
     private Vector2Int _position;
     private Func<Vector2Int, Vector2> _toWorldPosFunc;
+    private Func<Vector2Int, bool> _isSafeFunc;
     private Action _onDie;
+    private Action _onWin;
+    private float _winPosY;
     private bool _isDie = false;
+    private bool _isWin = false;
 
     void Start() {
         _isDie = false;
@@ -55,15 +59,21 @@ public class Frog : MonoBehaviour
     }
 
     void Update() {
-        
+        if (_isWin) {
+            _onWin();
+            _isWin = false;
+        }
     }
 
-    public void Init(Vector2Int position, Func<Vector2Int, Vector2> toWorldPosFunc, Action onDie) {
+    public void Init(Vector2Int position, Func<Vector2Int, Vector2> toWorldPosFunc, Action onDie, Func<Vector2Int, bool> isSafeFunc, float winPosY, Action OnWin) {
         _animator = GetComponent<Animator>();
         _animator.SetTrigger(FrogParameter.AnimTrigger(MoveType.Start));
         _initPosition = position;
         _toWorldPosFunc = toWorldPosFunc;
+        _isSafeFunc = isSafeFunc;
         _onDie = onDie;
+        _winPosY = winPosY;
+        _onWin = OnWin;
         _isDie = false;
 
         SetPosition(_initPosition);
@@ -71,6 +81,12 @@ public class Frog : MonoBehaviour
 
     public void Move(MoveType type) {
         if (!_isDie) {
+            Vector2Int moveDir = FrogParameter.MoveDir(type);
+            Vector2Int nextPos = _position + moveDir;
+            if (!_isSafeFunc(nextPos)) {
+                return;
+            }
+
             StartCoroutine(PlayAnimAndMove(type));
         }
     }
@@ -100,6 +116,10 @@ public class Frog : MonoBehaviour
         }
 
         SetPosition(nextPos);
+
+        if (nextPos.y >= _winPosY) {
+            _isWin = true;
+        }
     }
 
     private IEnumerator FrogDie() {
@@ -117,7 +137,7 @@ public class Frog : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other) {
         if (other.CompareTag("Enemy") && !_isDie) {
             _isDie = true;
-            Debug.Log("Die");
+            //Debug.Log("Die");
             Die();
         }
     }
