@@ -35,6 +35,16 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
     void Start()
     {
         bird.Initialize(this);
+
+        hasPlayedIntro = false;
+        introStartTime = Time.time;
+        isGaming = false;
+        gameStartTime = Time.time;
+        hasStartedGame = false;
+
+        isInputA = false;
+        wasInputA = false;
+        wasInputATurnedThisFrame = false;
         StartIntro();
     }
     void Update()
