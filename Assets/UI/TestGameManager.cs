@@ -20,10 +20,15 @@ public class TestGameManager : MonoBehaviour
 
     bool isWin = false;
 
+    int score;
+    int life;
+
     // Start is called before the first frame update
     void Start()
     {
         InGameUIObj.transform.position = new Vector3(25, -0.58f, -117);
+        life = 10;
+        score = 0;
     }
 
     // Update is called once per frame
@@ -66,11 +71,13 @@ public class TestGameManager : MonoBehaviour
         yield return new WaitForSeconds(3.3f);
 
         int i = 1;
-        while (true) {
+        while (life > 0) {
             ingameScript.AboutGameText(GameAboutText(i));
             yield return new WaitForSeconds(3f);
             InstantiateGame(i);
         }
+
+        ingameScript.GameOverText(score);
     }
 
     void InstantiateGame(int i) {
@@ -129,5 +136,14 @@ public class TestGameManager : MonoBehaviour
 
     public void SetWinOrDie(bool isWin) {
         this.isWin = isWin;
+        if (isWin)
+        {
+            score++;
+        }
+        else
+        {
+            life--;
+        }
+
     }
 }
