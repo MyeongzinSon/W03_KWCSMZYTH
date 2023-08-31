@@ -20,6 +20,7 @@ namespace Minigames.Mario.Scripts
         public CharacterJump characterJump;
         public CharacterMovement characterMovement;
         public Animator Anim { get; private set; }
+        public Rigidbody2D Rb { get; private set; }
         
         #endregion
         
@@ -70,7 +71,15 @@ namespace Minigames.Mario.Scripts
         private bool _isGaming;
         private float _gameStartTime;
         private bool _hasStartedGame = false;
+        
         private bool _isGameEnd = false;
+
+        private Vector2 _lastSpeed;
+        private Vector3 _lastPosition;
+        private float _originGravityScale;
+
+        private bool _canMove;
+        private bool _toggleContinue;
         
         
         [Header("Coroutines")]
@@ -97,8 +106,10 @@ namespace Minigames.Mario.Scripts
             characterJump = GetComponent<CharacterJump>();
             characterMovement = GetComponent<CharacterMovement>();
             Anim = transform.GetComponent<Animator>();
+            Rb = transform.GetComponent<Rigidbody2D>();
 
             _startPosition = transform.position;
+            _originGravityScale = Rb.gravityScale;
 
             _introStartTime = Time.time;
             _gameStartTime = Time.time;
@@ -111,6 +122,9 @@ namespace Minigames.Mario.Scripts
             _hasPlayedIntro = false;
             _hasStartedGame = false;
             _isGameEnd = false;
+
+            _canMove = true;
+            characterJump.canMove = _canMove;
 
             isClear = false;
             
@@ -137,7 +151,7 @@ namespace Minigames.Mario.Scripts
 
             if (_isGaming || !_hasPlayedIntro)
             {
-                Debug.Log("C1");
+                //Debug.Log("C1");
                 CheckUpdateRight();
                 CheckUpdateLeft();
                 CheckUpdateA();
@@ -146,7 +160,7 @@ namespace Minigames.Mario.Scripts
                 
                 if (Time.time > _gameStartTime + gameTime)
                 {
-                    Debug.Log("C2");
+                    //Debug.Log("C2");
                     OnPlayerDied();
                 }
             }
@@ -154,6 +168,15 @@ namespace Minigames.Mario.Scripts
             if (Input.GetKeyDown(KeyCode.R))
             {
                 OnSelectGame();
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (_toggleContinue)
+            {
+                ToggleWorld(_canMove);
+                _toggleContinue = false;
             }
         }
 
@@ -175,6 +198,25 @@ namespace Minigames.Mario.Scripts
             StartIntro();
         }
 
+        public void ToggleWorld(bool isOn)
+        {
+            if (isOn)
+            {
+                // 공간에 정지
+                _lastSpeed = Rb.velocity;
+                _lastPosition = transform.position;
+                Rb.gravityScale = 0;
+                Rb.velocity = Vector2.zero;
+                transform.position = _lastPosition;
+            }
+            else
+            {
+                // 공간에 정지 재개
+                Rb.gravityScale = _originGravityScale;
+                Rb.velocity = _lastSpeed;
+            }
+        }
+
         #region Game States
         
         
@@ -191,6 +233,11 @@ namespace Minigames.Mario.Scripts
             _hasPlayedIntro = true;
             movementLimiter.instance.CharacterCanMove = false;
             useBufferedInput = true;
+
+            _canMove = false;
+            characterJump.canMove = _canMove;
+            _toggleContinue = true;
+            
             OnRecord();
             startBoundary.SetActive(false);
         }
@@ -198,6 +245,10 @@ namespace Minigames.Mario.Scripts
         // 녹화된 입력을 재생
         void StartGame()
         {
+            _canMove = true;
+            characterJump.canMove = _canMove;
+            _toggleContinue = true;
+            
             _gameStartTime = Time.time;
             _isGaming = true;
             movementLimiter.instance.CharacterCanMove = true;
@@ -208,6 +259,7 @@ namespace Minigames.Mario.Scripts
             _isGaming = false;
             movementLimiter.instance.CharacterCanMove = false;
             Debug.Log("CLEAR? : " + isClear);
+            
             //ResetGame();
         }
 
