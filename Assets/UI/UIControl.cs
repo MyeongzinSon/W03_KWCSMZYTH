@@ -107,11 +107,11 @@ public class UIControl : MonoBehaviour
         tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("중간 중간에 화면이 멈추지 뭐니.", 0.3f);
         yield return new WaitForSeconds(2.5f);
         tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("그렇다고 손을 떼면 안돼. 그래보이지 않아도 버튼은 제대로 작동하거든.", 0.3f);
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(5f);
         tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("화면이 다시 풀리면 그동안 누른 버튼들이 그대로 적용될거야.", 0.3f);
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(3.5f);
         tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("그러니 화면이 멈추지 않았다 상상하면서 플레이해보렴!", 0.3f);
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(3.5f);
     }
 
     // 3.3초 걸림

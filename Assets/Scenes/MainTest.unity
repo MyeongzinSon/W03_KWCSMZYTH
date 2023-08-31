@@ -471,18 +471,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
-      propertyPath: m_text
-      value: "\uC774\uBC88 \uAC8C\uC784\uC740 \uD50C\uB7AB\uD3EC\uBA38\uC785\uB2C8\uB2E4.
-        \uC798 \uB6F0\uC5B4\uC11C \uBAA9\uC801\uC9C0\uAE4C\uC9C0 \uAC00\uC138\uC694!"
-      objectReference: {fileID: 0}
-    - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 549dd5fe88829624a9ec4738a7853a64, type: 2}
+      objectReference: {fileID: 11400000, guid: d4ee58f130bbd554a99f4f02ddefbbb5, type: 2}
     - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 3492691568607512436, guid: 549dd5fe88829624a9ec4738a7853a64, type: 2}
+      objectReference: {fileID: -6540583852619457365, guid: d4ee58f130bbd554a99f4f02ddefbbb5, type: 2}
     - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
