@@ -99,6 +99,16 @@ public class TestGameManager : MonoBehaviour
             }
             DestroyGame(i);
             ingameScript.ShowWinOrDieText(isWin ? "승리" : "실패");
+            int score;
+            if (!isWin) {
+                score = GameObject.FindAnyObjectByType<LifeIndicator>().Minus();
+                if (score == 0) {
+                    yield return new WaitForSeconds(3.3f);
+                    ingameScript.FinalEnd();
+                    yield return new WaitForSeconds(3.3f);
+                    yield break;
+                }
+            }
             yield return new WaitForSeconds(3.3f);
             i++;
             // if (i == 2) {

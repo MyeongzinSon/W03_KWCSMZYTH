@@ -179,4 +179,18 @@ public class UIControl : MonoBehaviour
         tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText($"수고하셨습니다. 당신의 점수는 {score}점 입니다.", 0.3f);
         yield return new WaitForSeconds(2.5f);
     }
+
+    public void FinalEnd() {
+        tutorialTextObj.SetActive(true);
+        warningObj.SetActive(false);
+        timeSliderObj.SetActive(false);
+
+        StartCoroutine(FinalEndCo());
+    }
+
+    IEnumerator FinalEndCo() {
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "";
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("게임오버", 0.3f);
+        yield return new WaitForSeconds(2.5f);
+    }
 }

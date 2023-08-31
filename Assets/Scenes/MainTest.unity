@@ -470,6 +470,23 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
+      propertyPath: m_text
+      value: "\uC774\uBC88 \uAC8C\uC784\uC740 \uD50C\uB7AB\uD3EC\uBA38\uC785\uB2C8\uB2E4.
+        \uC798 \uB6F0\uC5B4\uC11C \uBAA9\uC801\uC9C0\uAE4C\uC9C0 \uAC00\uC138\uC694!"
+      objectReference: {fileID: 0}
+    - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 549dd5fe88829624a9ec4738a7853a64, type: 2}
+    - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 3492691568607512436, guid: 549dd5fe88829624a9ec4738a7853a64, type: 2}
+    - target: {fileID: 410569269494940954, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6528911170470341478, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.7
@@ -544,7 +561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7455721543735589449, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
@@ -1262,6 +1279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1380479917}
+  - component: {fileID: 1380479918}
   m_Layer: 5
   m_Name: Life
   m_TagString: Untagged
@@ -1291,6 +1309,18 @@ RectTransform:
   m_AnchoredPosition: {x: 100, y: -172.8}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1380479918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380479916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a715c078772c1419926a6d2845b0f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1610835215
 GameObject:
   m_ObjectHideFlags: 0
