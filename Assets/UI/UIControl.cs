@@ -100,17 +100,17 @@ public class UIControl : MonoBehaviour
 
     // 15초 걸림
     private IEnumerator ShowTutorialTextCoroutine() {
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("안녕하세요.", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("아들~ 어렵게 구한 300년전 장난감이야. 맘에 들었음 좋겠다.", 0.3f);
         yield return new WaitForSeconds(2.5f);
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("이 게임은 멈춰있는 상황에서의 입력으로 진행됩니다.", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("그런데 오래돼서 좀 고장났나봐.", 0.3f);
         yield return new WaitForSeconds(2.5f);
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("준비 중 이라는 문구에서는 잠시 게임을 확인할 수 있습니다.", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("중간 중간에 화면이 멈추지 뭐니.", 0.3f);
         yield return new WaitForSeconds(2.5f);
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("멈춤이라는 문구에서 입력을 받습니다.", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("그렇다고 손을 떼면 안돼. 그래보이지 않아도 버튼은 제대로 작동하거든.", 0.3f);
         yield return new WaitForSeconds(2.5f);
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("반영 중이라는 문구에서 입력을 실행합니다.", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("화면이 다시 풀리면 그동안 누른 버튼들이 그대로 적용될거야.", 0.3f);
         yield return new WaitForSeconds(2.5f);
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("잠깐 확인해볼까요", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("그러니 화면이 멈추지 않았다 상상하면서 플레이해보렴!", 0.3f);
         yield return new WaitForSeconds(2.5f);
     }
 
@@ -144,7 +144,7 @@ public class UIControl : MonoBehaviour
     // 2.5초 걸림
     IEnumerator ShowRealGameStartTextCoroutine() {
         tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "";
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("이제 진짜로 시작해봅시다.", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("-본게임 시작-", 0.3f);
         yield return new WaitForSeconds(2.5f);
     }
 
@@ -176,7 +176,7 @@ public class UIControl : MonoBehaviour
     IEnumerator GameOverTextCoroutine(int score)
     {
         tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "";
-        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText($"수고하셨습니다. 당신의 점수는 {score}점 입니다.", 0.3f);
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText($"게임 오버. 점수: {score}", 0.3f);
         yield return new WaitForSeconds(2.5f);
     }
 }
