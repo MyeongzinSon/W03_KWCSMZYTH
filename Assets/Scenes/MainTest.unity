@@ -500,7 +500,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6528911171627036106, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.38
+      value: 5.63
       objectReference: {fileID: 0}
     - target: {fileID: 6528911171627036106, guid: 4be162d1ad1dd2742b9f5a5a6c98b60b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1157,7 +1157,7 @@ MonoBehaviour:
   ingameScript: {fileID: 1309911855}
   froggerPrefab: {fileID: 1637979854086583373, guid: ffcb6f6924d8ae84e8b05c4dcca4ea84, type: 3}
   flappyPrefab: {fileID: 6677572865048871317, guid: 4001f631983562a46b4bb860f2b86629, type: 3}
-  platformerPrefab: {fileID: 1637317488251852860, guid: 719cf28d630365345a3301de4cd16a67, type: 3}
+  platformerPrefab: {fileID: 3849982536088485075, guid: 719cf28d630365345a3301de4cd16a67, type: 3}
   pongPrefab: {fileID: 1973239410616886405, guid: 9d2d40c2ed469744c984b082be672200, type: 3}
   winInfoArrived: 0
 --- !u!224 &1309911854 stripped

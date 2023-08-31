@@ -80,7 +80,7 @@ public class TestGameManager : MonoBehaviour
         ingameScript.ShowRealGameStartText();
         yield return new WaitForSeconds(3.3f);
 
-        int i = 3;
+        int i = 1;
         while (true) {
             ingameScript.AboutGameText(GameAboutText(i));
             yield return new WaitForSeconds(3f);
@@ -101,10 +101,10 @@ public class TestGameManager : MonoBehaviour
             ingameScript.ShowWinOrDieText(isWin ? "승리" : "실패");
             yield return new WaitForSeconds(3.3f);
             i++;
-            if (i == 2) {
-                i = 3;
-            }
-            if (i == 4) {
+            // if (i == 2) {
+            //     i = 3;
+            // }
+            if (i == 3) {
                 i = 0;
             }
         }
@@ -138,7 +138,7 @@ public class TestGameManager : MonoBehaviour
 
     string GameAboutText(int i) {
         if (i == 0) {
-            return "이번 게임은 길건너 친구들입니다. 차들을 잘 살펴보세요!";
+            return "이번 게임은 길 건너 친구들입니다. 차들을 잘 보세요!";
         } else if (i == 1) {
             return "이번 게임은 플래피 버드입니다. 적절한 시간에 버튼을 누르세요!";
         } else if (i == 2) {
