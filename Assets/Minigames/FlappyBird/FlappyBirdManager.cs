@@ -51,7 +51,7 @@ public class FlappyBirdManager : MiniGameManager, IInputListener
         wasInputA = false;
         wasInputATurnedThisFrame = false;
 
-        mainGame.LoadMiniGameUI(IntroTime, RecordPlayTime);
+        //mainGame.LoadMiniGameUI(IntroTime, RecordPlayTime);
         StartIntro();
     }
     void Update()

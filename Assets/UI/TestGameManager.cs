@@ -12,8 +12,11 @@ public class TestGameManager : MonoBehaviour
     public LightningBoltScript lightningBoltScript2;
     public UIControl ingameScript;
 
-    public GameObject froggerObj;
+    public GameObject froggerPrefab;
     GameObject instatiatedFroggerObj;
+
+    public GameObject flappyPrefab;
+    GameObject instantiatedFlappyObj;
 
     bool isWin = false;
 
@@ -35,7 +38,7 @@ public class TestGameManager : MonoBehaviour
     }
 
     public void InstantiateFrogger() {
-        instatiatedFroggerObj = Instantiate(froggerObj, new Vector3(0, 1000, 0), Quaternion.identity);
+        instatiatedFroggerObj = Instantiate(froggerPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
     }
 
     public void DestroyFrogger() {
@@ -59,6 +62,69 @@ public class TestGameManager : MonoBehaviour
         DestroyFrogger();
         ingameScript.ShowWinOrDieText(isWin ? "승리" : "실패");
         yield return new WaitForSeconds(3.3f);
+        ingameScript.ShowRealGameStartText();
+        yield return new WaitForSeconds(3.3f);
+
+        int i = 1;
+        while (true) {
+            ingameScript.AboutGameText(GameAboutText(i));
+            yield return new WaitForSeconds(3f);
+            InstantiateGame(i);
+        }
+    }
+
+    void InstantiateGame(int i) {
+        if (i == 0) {
+            instatiatedFroggerObj = Instantiate(froggerPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+        } else if (i == 1) {
+            instantiatedFlappyObj = Instantiate(flappyPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+        } else if (i == 2) {
+            instantiatedFlappyObj = Instantiate(flappyPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+        } else if (i == 3) {
+            instantiatedFlappyObj = Instantiate(flappyPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+        }
+    }
+
+    string GameAboutText(int i) {
+        if (i == 0) {
+            return "이번 게임은 길건너 친구들입니다. 차들을 잘 살펴보세요!";
+        } else if (i == 1) {
+            return "이번 게임은 플래피 버드입니다. 적절한 시간에 버튼을 누르세요!";
+        } else if (i == 2) {
+            return "이번 게임은 플랫포머입니다. 잘 뛰어서 목적지까지 가세요!";
+        } else if (i == 3) {
+            return "이번 게임은 퐁 입니다. 공이 어디로 튈까요?";
+        } else {
+            return "";
+        }
+    }
+
+    float IntroTime(int i) {
+        if (i == 0) {
+            return 3;
+        } else if (i == 1) {
+            return 5;
+        } else if (i == 2) {
+            return 3;
+        } else if (i == 3) {
+            return "이번 게임은 퐁 입니다. 공이 어디로 튈까요?";
+        } else {
+            return "";
+        }
+    }
+
+    int GameTime(int i) {
+        if (i == 0) {
+            return 5;
+        } else if (i == 1) {
+            return 5;
+        } else if (i == 2) {
+            return 5;
+        } else if (i == 3) {
+            return "이번 게임은 퐁 입니다. 공이 어디로 튈까요?";
+        } else {
+            return "";
+        }
     }
 
     public void SetWinOrDie(bool isWin) {

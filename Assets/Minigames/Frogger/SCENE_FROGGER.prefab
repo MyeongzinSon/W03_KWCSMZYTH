@@ -326,6 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 244e40b4eb1be4f4fa7a690244ec2a6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainGame: {fileID: 0}
   snakeGroundLines: []
   carLeftLines: feffffff00000000
   carRightLines: fbffffff

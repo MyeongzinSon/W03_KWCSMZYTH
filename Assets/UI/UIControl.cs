@@ -131,4 +131,36 @@ public class UIControl : MonoBehaviour
         yield return new WaitForSeconds(3f);
         warningPanel.transform.DOScale(0, 0.3f);
     }
+
+    // 2.5초 걸림
+    public void ShowRealGameStartText() {
+        tutorialTextObj.SetActive(true);
+        warningObj.SetActive(false);
+        timeSliderObj.SetActive(false);
+
+        StartCoroutine(ShowRealGameStartTextCoroutine());
+    }
+
+    // 2.5초 걸림
+    IEnumerator ShowRealGameStartTextCoroutine() {
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "";
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText("이제 진짜로 시작해봅시다.", 0.3f);
+        yield return new WaitForSeconds(2.5f);
+    }
+
+    // 2.5초 걸림
+    public void AboutGameText(string txt) {
+        tutorialTextObj.SetActive(true);
+        warningObj.SetActive(false);
+        timeSliderObj.SetActive(false);
+
+        StartCoroutine(AboutGameTextCoroutine(txt));
+    }
+
+    // 2.5초 걸림
+    IEnumerator AboutGameTextCoroutine(string txt) {
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "";
+        tutorialTextObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().DOText(txt, 0.3f);
+        yield return new WaitForSeconds(2.5f);
+    }
 }

@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32ad08c7ea50b134a9a8c156a549da2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainGame: {fileID: 0}
   useBufferedInput: 0
   wallSpeed: 2
   gameTime: 5
@@ -745,7 +746,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 7618d4649f56af645a9aaec6ab52e9af, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
