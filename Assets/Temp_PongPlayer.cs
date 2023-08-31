@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Temp_PongPlayer : MonoBehaviour, IInputListener
+public class Temp_PongPlayer : MiniGameManager, IInputListener
 {
     public bool isUsingBufferedInput;
     public float playerSpeed;
@@ -47,6 +47,9 @@ public class Temp_PongPlayer : MonoBehaviour, IInputListener
     bool wasInputATurnedThisFrame;
 
     [HideInInspector] public bool isAfterDecode = false;
+
+    public override float IntroTime => startRecordTime;
+    public override float RecordPlayTime => recordDuration;
 
     private void Awake()
     {

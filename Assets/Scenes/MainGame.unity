@@ -153,10 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   miniGamePrefabs:
-  - {fileID: 6677572865048871317, guid: 4001f631983562a46b4bb860f2b86629, type: 3}
-  - {fileID: 1973239410616886405, guid: 9d2d40c2ed469744c984b082be672200, type: 3}
-  - {fileID: 1637979854086583373, guid: ffcb6f6924d8ae84e8b05c4dcca4ea84, type: 3}
   - {fileID: 1637317488251852860, guid: 719cf28d630365345a3301de4cd16a67, type: 3}
+  - {fileID: 6677572865048871317, guid: 4001f631983562a46b4bb860f2b86629, type: 3}
+  - {fileID: 1637979854086583373, guid: ffcb6f6924d8ae84e8b05c4dcca4ea84, type: 3}
   timeDifficultyCoefficient: 0.2
   gameChangeDuration: 1
   cycleCount: 0

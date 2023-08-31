@@ -70,7 +70,8 @@ public class GameManager : MonoBehaviour
 
     public void MiniGameClear()
     {
-        Debug.Log($"미니게임 깼다~ **아직 다음 게임 넘어가는 코드 없음!**");
+        Debug.Log($"미니게임 깼다~");
+        Invoke("LoadNextMiniGame", gameChangeDuration);
     }
     public void MiniGameOver() 
     {
