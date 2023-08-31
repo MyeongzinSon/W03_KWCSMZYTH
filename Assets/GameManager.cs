@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameObject[] miniGamePrefabs;
     [SerializeField] float timeDifficultyCoefficient = 0.2f;
+    [SerializeField] float gameChangeDuration = 1;
+
     public int cycleCount;
     public int startingLife;
     public int currentLife;
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Initialize();
+        LoadNextMiniGame();
     }
     void Initialize()
     { 
@@ -67,14 +70,20 @@ public class GameManager : MonoBehaviour
 
     public void MiniGameClear()
     {
-
+        Debug.Log($"미니게임 깼다~");
+        Invoke("LoadNextMiniGame", gameChangeDuration);
     }
     public void MiniGameOver() 
     {
         currentLife--;
+        Debug.Log($"미니게임 실패... current life = {currentLife}");
         if (currentLife == 0)
         {
             EntireGameOver();
+        }
+        else
+        {
+            Invoke("LoadNextMiniGame", gameChangeDuration);
         }
     }
     void EntireGameOver()
@@ -107,16 +116,23 @@ public class GameManager : MonoBehaviour
 
     public void LoadNextMiniGame()
     {
+        if (currentMiniGame)
+        {
+            Debug.Log(currentMiniGame.GetInstanceID());
+            Destroy(currentMiniGame.transform.parent.gameObject);
+            Debug.Log(currentMiniGame.GetInstanceID());
+        }
+
         var nextMiniGame = GetNextMiniGame();
-        Instantiate(nextMiniGame);
-        currentMiniGame = nextMiniGame.GetComponent<MiniGameManager>();
+        currentMiniGame = Instantiate(nextMiniGame).GetComponentInChildren<MiniGameManager>();
+        currentMiniGame.Initialize();
 
         SetTimeDifficulty();
-        currentMiniGame.StartMiniGame();
     }
 
     void SetTimeDifficulty()
     {
         Time.timeScale = 1 + (cycleCount - 1) * timeDifficultyCoefficient;
+        Debug.Log($"TimeScale = {Time.timeScale}");
     }
 }

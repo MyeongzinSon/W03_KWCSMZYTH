@@ -17,7 +17,17 @@ public abstract class MiniGameManager : MonoBehaviour
     {
         mainGame.LoadMiniGameUI(IntroTime, RecordPlayTime);    
     }
-    public virtual void EndMiniGame()
+    protected virtual void MiniGameClear()
+    {
+        EndMiniGame();
+        mainGame.MiniGameClear();
+    }
+    protected virtual void MiniGameOver()
+    {
+        EndMiniGame();
+        mainGame.MiniGameOver();
+    }
+    protected virtual void EndMiniGame()
     {
 
     }

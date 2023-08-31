@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
-public class FroggerManager : MonoBehaviour, IInputListener
+public class FroggerManager : MiniGameManager, IInputListener
 {
     [SerializeField] private List<SnakeLine> snakeGroundLines;
     [SerializeField] private List<int> carLeftLines;
@@ -59,6 +59,9 @@ public class FroggerManager : MonoBehaviour, IInputListener
     public bool useBufferedInput;
     public float introTime;
     public float gameTime;
+
+    public override float IntroTime => introTime;
+    public override float RecordPlayTime => gameTime;
 
 
     void Start()
@@ -220,6 +223,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
         hasPlayedIntro = true;
         EndGame();
         GameObject.FindAnyObjectByType<TestGameManager>().SetWinOrDie(true);
+        MiniGameClear();
     }
 
     IEnumerator InstantiateEnemy(int lineYPos, bool isBig, float dir, GameObject prefab, float waitTime, bool isRandom)
@@ -301,7 +305,7 @@ public class FroggerManager : MonoBehaviour, IInputListener
     public void OnPlayerDied()
     {
         hasPlayedIntro = true;
-        EndGame();
+        MiniGameOver();
     }
 
     public void OnRecord()
