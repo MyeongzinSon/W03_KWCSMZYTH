@@ -30,10 +30,15 @@ public class TestGameManager : MonoBehaviour
     float pongIntroTime;
     float pongGameTime;
 
+    int score;
+    int life;
+
     // Start is called before the first frame update
     void Start()
     {
         InGameUIObj.transform.position = new Vector3(25, -0.58f, -117);
+        life = 10;
+        score = 0;
     }
 
     // Update is called once per frame
@@ -103,6 +108,8 @@ public class TestGameManager : MonoBehaviour
                 i = 0;
             }
         }
+
+        ingameScript.GameOverText(score);
     }
 
     void InstantiateGame(int i) {
@@ -173,6 +180,15 @@ public class TestGameManager : MonoBehaviour
 
     public void SetWinOrDie(bool isWin) {
         this.isWin = isWin;
+        if (isWin)
+        {
+            score++;
+        }
+        else
+        {
+            life--;
+        }
+
     }
 
     public void SetPongInfo(float intro, float game) {
