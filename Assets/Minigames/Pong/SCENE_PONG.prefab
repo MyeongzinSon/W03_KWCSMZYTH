@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 1973239410498212966}
   - component: {fileID: 1973239410498212967}
   - component: {fileID: 1973239410498212964}
+  - component: {fileID: 457753442}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -160,7 +161,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 7618d4649f56af645a9aaec6ab52e9af, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -178,6 +179,26 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973239410498212965}
   m_Enabled: 1
+--- !u!114 &457753442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973239410498212965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a160d838ff8b4b4693ac20007e008c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AssetsPPU: 14
+  m_RefResolutionX: 320
+  m_RefResolutionY: 180
+  m_UpscaleRT: 0
+  m_PixelSnapping: 0
+  m_CropFrameX: 0
+  m_CropFrameY: 0
+  m_StretchFill: 0
 --- !u!1 &1973239410616886405
 GameObject:
   m_ObjectHideFlags: 0
@@ -767,6 +788,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b3955515fc7ca249bc031b0bb5f7224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainGame: {fileID: 0}
   isUsingBufferedInput: 0
   playerSpeed: 5.666
   startingPongSpeed: 7

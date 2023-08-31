@@ -239,7 +239,7 @@ namespace Minigames.Mario.Scripts
             Debug.Log($"Player died...");
             MiniGameOver();
         }
-        protected override void EndMiniGame()
+        public override void EndMiniGame()
         {
             _isGameEnd = true;
         }

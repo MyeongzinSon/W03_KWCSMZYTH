@@ -18,19 +18,21 @@ public abstract class MiniGameManager : MonoBehaviour
     {
         //mainGame.LoadMiniGameUI(IntroTime, RecordPlayTime);   
     }
-    protected virtual void MiniGameClear()
+    public virtual void MiniGameClear()
     {
         EndMiniGame();
         //mainGame.MiniGameClear();
         GameObject.FindAnyObjectByType<TestGameManager>().SetWinOrDie(true);
+        GameObject.FindAnyObjectByType<TestGameManager>().winInfoArrived = true;
     }
-    protected virtual void MiniGameOver()
+    public virtual void MiniGameOver()
     {
         EndMiniGame();
         //mainGame.MiniGameOver();
         GameObject.FindAnyObjectByType<TestGameManager>().SetWinOrDie(false);
+        GameObject.FindAnyObjectByType<TestGameManager>().winInfoArrived = true;
     }
-    protected virtual void EndMiniGame()
+    public virtual void EndMiniGame()
     {
 
     }

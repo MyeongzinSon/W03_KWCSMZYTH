@@ -158,16 +158,16 @@ public class FlappyBirdManager : MiniGameManager, IInputListener
         hasStartedGame = true;
     }
 
-    protected override void MiniGameClear()
+    public override void MiniGameClear()
     {
         base.MiniGameClear();
     }
 
-    protected override void MiniGameOver()
+    public override void MiniGameOver()
     {
         base.MiniGameOver();
     }
-    protected override void EndMiniGame()
+    public override void EndMiniGame()
     {
         isGaming = false;
         bird.canMove = false;

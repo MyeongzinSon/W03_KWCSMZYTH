@@ -18,7 +18,17 @@ public class TestGameManager : MonoBehaviour
     public GameObject flappyPrefab;
     GameObject instantiatedFlappyObj;
 
+    public GameObject platformerPrefab;
+    GameObject instantiatedPlatformerObj;
+
+    public GameObject pongPrefab;
+    GameObject instantiatedPongObj;
+
+    public bool winInfoArrived = false;
     bool isWin = false;
+    bool isPongArrive = false;
+    float pongIntroTime;
+    float pongGameTime;
 
     // Start is called before the first frame update
     void Start()
@@ -65,23 +75,57 @@ public class TestGameManager : MonoBehaviour
         ingameScript.ShowRealGameStartText();
         yield return new WaitForSeconds(3.3f);
 
-        int i = 1;
+        int i = 3;
         while (true) {
             ingameScript.AboutGameText(GameAboutText(i));
             yield return new WaitForSeconds(3f);
+            winInfoArrived = false;
             InstantiateGame(i);
+            if (i == 3) {
+                isPongArrive = false;
+                while (isPongArrive == false || winInfoArrived == false) {
+                    yield return null;
+                }
+                ingameScript.InGameUIShow(pongIntroTime, pongGameTime);
+                yield return new WaitForSeconds(pongIntroTime + (pongGameTime * 2) + 1f);
+            } else {
+                ingameScript.InGameUIShow(IntroTime(i), GameTime(i));
+                yield return new WaitForSeconds(IntroTime(i) + (GameTime(i) * 2) + 1f);
+            }
+            DestroyGame(i);
+            ingameScript.ShowWinOrDieText(isWin ? "승리" : "실패");
+            yield return new WaitForSeconds(3.3f);
+            i++;
+            if (i == 2) {
+                i = 3;
+            }
+            if (i == 4) {
+                i = 0;
+            }
         }
     }
 
     void InstantiateGame(int i) {
         if (i == 0) {
-            instatiatedFroggerObj = Instantiate(froggerPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+            instatiatedFroggerObj = Instantiate(froggerPrefab, new Vector3(40, 0, 0), Quaternion.identity);
         } else if (i == 1) {
-            instantiatedFlappyObj = Instantiate(flappyPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+            instantiatedFlappyObj = Instantiate(flappyPrefab, new Vector3(40, 0, 0), Quaternion.identity);
         } else if (i == 2) {
-            instantiatedFlappyObj = Instantiate(flappyPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+            instantiatedPlatformerObj = Instantiate(platformerPrefab, new Vector3(40, 0, 0), Quaternion.identity);
         } else if (i == 3) {
-            instantiatedFlappyObj = Instantiate(flappyPrefab, new Vector3(0, 1000, 0), Quaternion.identity);
+            instantiatedPongObj = Instantiate(pongPrefab, new Vector3(40, 0, 0), Quaternion.identity);
+        }
+    }
+
+    void DestroyGame(int i) {
+        if (i == 0) {
+            Destroy(instatiatedFroggerObj);
+        } else if (i == 1) {
+            Destroy(instantiatedFlappyObj);
+        } else if (i == 2) {
+            Destroy(instantiatedPlatformerObj);
+        } else if (i == 3) {
+            Destroy(instantiatedPongObj);
         }
     }
 
@@ -107,9 +151,9 @@ public class TestGameManager : MonoBehaviour
         } else if (i == 2) {
             return 3;
         } else if (i == 3) {
-            return "이번 게임은 퐁 입니다. 공이 어디로 튈까요?";
+            return 0;
         } else {
-            return "";
+            return 0;
         }
     }
 
@@ -121,13 +165,19 @@ public class TestGameManager : MonoBehaviour
         } else if (i == 2) {
             return 5;
         } else if (i == 3) {
-            return "이번 게임은 퐁 입니다. 공이 어디로 튈까요?";
+            return 0;
         } else {
-            return "";
+            return 0;
         }
     }
 
     public void SetWinOrDie(bool isWin) {
         this.isWin = isWin;
+    }
+
+    public void SetPongInfo(float intro, float game) {
+        pongIntroTime = intro;
+        pongGameTime = game;
+        isPongArrive = true;
     }
 }

@@ -45,7 +45,8 @@ public class PongController : MonoBehaviour
         alarmTime -= Time.deltaTime;
         if ( alarmTime <= player.alarmInitialDelay) 
         {
-            //UI ½ÃÀÛ
+            //UI ï¿½ï¿½ï¿½ï¿½
+            GameObject.FindAnyObjectByType<TestGameManager>().SetPongInfo(player.alarmInitialDelay, player.recordDuration);
             player.SetRecord(alarmTime);
             player.SetDecode(alarmTime + player.recordDuration + .5f);
             alarmTime = Mathf.Infinity;
@@ -70,13 +71,15 @@ public class PongController : MonoBehaviour
             }
             else if (transform.position.x < player.leftX && !isGameFinished) 
             { 
-                GameManager.Instance.MiniGameClear(); 
+                //GameManager.Instance.MiniGameClear(); 
+                player.MiniGameClear();
                 isGameFinished = true;
             }
         }
         if (transform.position.x > pongRightX && !isGameFinished)
         {
-            GameManager.Instance.MiniGameOver();
+            //GameManager.Instance.MiniGameOver();
+            player.MiniGameOver();
             isGameFinished = true;
         }
         if (transform.position.y < pongBottomY || transform.position.y > pongTopY)
