@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] float gameChangeDuration = 1;
 
     public int cycleCount;
+    public int score;
     public int startingLife;
     public int currentLife;
 
@@ -40,7 +41,8 @@ public class GameManager : MonoBehaviour
         LoadNextMiniGame();
     }
     void Initialize()
-    { 
+    {
+        score = 0;
         cycleCount = 0;
         currentLife = startingLife;
         miniGameQueue = new Queue<GameObject>();
@@ -54,13 +56,13 @@ public class GameManager : MonoBehaviour
         }
     }
     /// <summary>
-    /// °¢ ¹Ì´Ï°ÔÀÓ ÄÁÆ®·Ñ·¯¿¡¼­ ½ÃÀÛ½Ã È£Ãâ
+    /// ê° ë¯¸ë‹ˆê²Œì„ ì»¨íŠ¸ë¡¤ëŸ¬ì—ì„œ ì‹œì‘ì‹œ í˜¸ì¶œ
     /// </summary>
-    /// <param name="introTime"> °ÔÀÓ ½ÃÀÛ Àü ¿¬½À ½Ã°£</param>
-    /// <param name="recordTime"> Á¶ÀÛ ÀÔ·ÂÀÌ ³ìÈ­µÇ°í Àç»ıµÇ´Â ½Ã°£</param>
+    /// <param name="introTime"> ê²Œì„ ì‹œì‘ ì „ ì—°ìŠµ ì‹œê°„</param>
+    /// <param name="recordTime"> ì¡°ì‘ ì…ë ¥ì´ ë…¹í™”ë˜ê³  ì¬ìƒë˜ëŠ” ì‹œê°„</param>
     public void LoadMiniGameUI(float introTime, float recordTime)
     {
-        Debug.Log($"¿©±â¼­ UI ¶ç¿ò");
+        Debug.Log($"ì—¬ê¸°ì„œ UI ë„ì›€");
     }
 
      IEnumerator MiniGameStartUI()
@@ -70,30 +72,32 @@ public class GameManager : MonoBehaviour
 
     public void MiniGameClear()
     {
-        Debug.Log($"¹Ì´Ï°ÔÀÓ ²£´Ù~");
-        Invoke("LoadNextMiniGame", gameChangeDuration);
+        score++;
+        Debug.Log($"ë¯¸ë‹ˆê²Œì„ ê¹¼ë‹¤~ score = {score}");
+        Invoke("LoadNextMiniGame", gameChangeDuration * Time.timeScale);
+
     }
     public void MiniGameOver() 
     {
         currentLife--;
-        Debug.Log($"¹Ì´Ï°ÔÀÓ ½ÇÆĞ... current life = {currentLife}");
+        Debug.Log($"ë¯¸ë‹ˆê²Œì„ ì‹¤íŒ¨... current life = {currentLife}");
         if (currentLife == 0)
         {
             EntireGameOver();
         }
         else
         {
-            Invoke("LoadNextMiniGame", gameChangeDuration);
+            Invoke("LoadNextMiniGame", gameChangeDuration * Time.timeScale);
         }
     }
     void EntireGameOver()
     {
-        Debug.Log($"°ÔÀÓ ÁøÂ¥ ³¡³²... ");
+        Debug.Log($"ê²Œì„ ì§„ì§œ ëë‚¨... ");
     }
     /// <summary>
-    /// ÀÎµ¦½º¸¦ ³ÖÀ¸¸é ÇØ´ç ¹Ì´Ï°ÔÀÓÀ» ·ÎµåÇÔ
+    /// ì¸ë±ìŠ¤ë¥¼ ë„£ìœ¼ë©´ í•´ë‹¹ ë¯¸ë‹ˆê²Œì„ì„ ë¡œë“œí•¨
     /// </summary>
-    /// <param name="index"> ¹Ì´Ï°ÔÀÓ ¹øÈ£ </param>
+    /// <param name="index"> ë¯¸ë‹ˆê²Œì„ ë²ˆí˜¸ </param>
     void StartMiniGame(int index)
     {
 
