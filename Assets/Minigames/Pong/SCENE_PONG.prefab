@@ -211,7 +211,6 @@ Transform:
   - {fileID: 1973239412496146603}
   - {fileID: 1973239411986894021}
   - {fileID: 1973239411248489610}
-  - {fileID: 1973239411313018555}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -229,7 +228,7 @@ GameObject:
   - component: {fileID: 1973239411248489609}
   m_Layer: 0
   m_Name: Opponent
-  m_TagString: Bar
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -243,7 +242,7 @@ Transform:
   m_GameObject: {fileID: 1973239411248489614}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -5.03, y: 0, z: 0}
-  m_LocalScale: {x: 0.6201, y: 2.5928, z: 1}
+  m_LocalScale: {x: 0.2, y: 2.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1973239410616886404}
@@ -342,53 +341,6 @@ MonoBehaviour:
   minSpeed: 1
   maxSpeed: 9
   offsetRange: 0.9
---- !u!1 &1973239411313018553
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1973239411313018555}
-  - component: {fileID: 1973239411313018552}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1973239411313018555
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1973239411313018553}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1973239410616886404}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1973239411313018552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1973239411313018553}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d581c87bd06635a4093f2eec6da14e82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cycleCount: 0
-  startingLife: 0
-  currentLife: 0
 --- !u!1 &1973239411986894041
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,7 +369,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973239411986894041}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.06, y: -0.05, z: -0.0919083}
+  m_LocalPosition: {x: -3.85, y: -2.16, z: -0.0919083}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -465,7 +417,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -534,12 +486,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1973239412496146603}
-  - component: {fileID: 1973239412496146600}
   - component: {fileID: 1973239412496146601}
   - component: {fileID: 1973239412496146606}
   - component: {fileID: 1973239412496146602}
   - component: {fileID: 1973239412496146644}
   - component: {fileID: 1973239412496146645}
+  - component: {fileID: 293058817}
   m_Layer: 0
   m_Name: Player
   m_TagString: Bar
@@ -556,40 +508,12 @@ Transform:
   m_GameObject: {fileID: 1973239412496146607}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 5.03, y: 0, z: 0}
-  m_LocalScale: {x: 0.6201, y: 2.5928, z: 1}
+  m_LocalScale: {x: 0.2, y: 2.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1973239410616886404}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1973239412496146600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1973239412496146607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f668998a98794346a11949edbb01222, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isUsingBufferedInput: 0
-  playerSpeed: 5
-  startingPongSpeed: 7
-  startingPongDirection: {x: -1, y: 1}
-  maxAngle: 75
-  dashDistance: 0.8
-  dashTime: 0.1
-  runSpeedMultiplier: 0
-  startRecordTime: 2
-  recordDuration: 3
-  topY: 0
-  bottomY: 0
-  leftX: 0
-  rightX: 0
-  playerTop: 0
-  playerBottom: 0
 --- !u!212 &1973239412496146601
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -695,8 +619,8 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1973239412496146600}
-        m_TargetAssemblyTypeName: Temp_PongPlayer, Assembly-CSharp
+      - m_Target: {fileID: 293058817}
+        m_TargetAssemblyTypeName: PongManager, Assembly-CSharp
         m_MethodName: OnInputUp
         m_Mode: 0
         m_Arguments:
@@ -711,8 +635,8 @@ MonoBehaviour:
     m_ActionName: Player/Up[/Keyboard/upArrow,/XInputControllerWindows/dpad/up]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1973239412496146600}
-        m_TargetAssemblyTypeName: Temp_PongPlayer, Assembly-CSharp
+      - m_Target: {fileID: 293058817}
+        m_TargetAssemblyTypeName: PongManager, Assembly-CSharp
         m_MethodName: OnInputDown
         m_Mode: 0
         m_Arguments:
@@ -735,8 +659,8 @@ MonoBehaviour:
     m_ActionName: Player/Left[/Keyboard/leftArrow,/XInputControllerWindows/dpad/left]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1973239412496146600}
-        m_TargetAssemblyTypeName: Temp_PongPlayer, Assembly-CSharp
+      - m_Target: {fileID: 293058817}
+        m_TargetAssemblyTypeName: PongManager, Assembly-CSharp
         m_MethodName: OnInputA
         m_Mode: 0
         m_Arguments:
@@ -831,3 +755,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b191373b9d85546afc483d4aff96d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &293058817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973239412496146607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b3955515fc7ca249bc031b0bb5f7224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isUsingBufferedInput: 0
+  playerSpeed: 5.666
+  startingPongSpeed: 7
+  startingPongDirection: {x: 1, y: 1}
+  maxAngle: 60
+  dashDistance: 0.8
+  dashTime: 0.05
+  runSpeedMultiplier: 0
+  startRecordTime: 3
+  recordDuration: 2
+  recordAlarmOpponentHitCount: 2
+  alarmTimeAfterPlayerHit: 0.1
+  alarmInitialDelay: 1
+  topY: 0
+  bottomY: 0
+  leftX: 0
+  rightX: 0
+  playerTop: 0
+  playerBottom: 0
+  isAfterDecode: 0
