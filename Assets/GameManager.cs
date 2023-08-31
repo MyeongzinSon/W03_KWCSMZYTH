@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] float gameChangeDuration = 1;
 
     public int cycleCount;
+    public int score;
     public int startingLife;
     public int currentLife;
 
@@ -40,7 +41,8 @@ public class GameManager : MonoBehaviour
         LoadNextMiniGame();
     }
     void Initialize()
-    { 
+    {
+        score = 0;
         cycleCount = 0;
         currentLife = startingLife;
         miniGameQueue = new Queue<GameObject>();
@@ -70,8 +72,10 @@ public class GameManager : MonoBehaviour
 
     public void MiniGameClear()
     {
-        Debug.Log($"미니게임 깼다~");
-        Invoke("LoadNextMiniGame", gameChangeDuration);
+        score++;
+        Debug.Log($"미니게임 깼다~ score = {score}");
+        Invoke("LoadNextMiniGame", gameChangeDuration * Time.timeScale);
+
     }
     public void MiniGameOver() 
     {
@@ -83,7 +87,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Invoke("LoadNextMiniGame", gameChangeDuration);
+            Invoke("LoadNextMiniGame", gameChangeDuration * Time.timeScale);
         }
     }
     void EntireGameOver()
