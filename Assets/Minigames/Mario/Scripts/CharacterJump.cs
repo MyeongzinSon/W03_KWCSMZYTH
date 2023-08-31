@@ -38,6 +38,8 @@ namespace Minigames.Mario.Scripts {
         public bool pressingJump;
         public bool onGround;
         private bool currentlyJumping;
+        
+        public bool canMove = true;
 
         void Awake() {
             //Find the character's Rigidbody and ground detection and juice scripts
@@ -99,6 +101,13 @@ namespace Minigames.Mario.Scripts {
         private void setPhysics() {
             //Determine the character's gravity scale, using the stats provided. Multiply it by a gravMultiplier, used later
             Vector2 newGravity = new Vector2(0, (-2 * jumpHeight) / (timeToJumpApex * timeToJumpApex));
+            if(!canMove)
+            {
+                body.gravityScale = 0f;
+                body.velocity = Vector2.zero;
+                return;
+                
+            }
             body.gravityScale = (newGravity.y / Physics2D.gravity.y) * gravMultiplier;
         }
 
