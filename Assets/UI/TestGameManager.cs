@@ -75,13 +75,13 @@ public class TestGameManager : MonoBehaviour
         ingameScript.InGameUIShow(3, 5);
         yield return new WaitForSeconds(13f);
         DestroyFrogger();
-        ingameScript.ShowWinOrDieText(isWin ? "승리" : "실패");
+        ingameScript.ShowWinOrDieText(isWin ? $"승리" : $"실패");
         yield return new WaitForSeconds(3.3f);
         ingameScript.ShowRealGameStartText();
         yield return new WaitForSeconds(3.3f);
 
-        int i = 1;
-        while (true) {
+        int i = 3;
+        while (life > 0) {
             ingameScript.AboutGameText(GameAboutText(i));
             yield return new WaitForSeconds(3f);
             winInfoArrived = false;
@@ -190,15 +190,6 @@ public class TestGameManager : MonoBehaviour
 
     public void SetWinOrDie(bool isWin) {
         this.isWin = isWin;
-        if (isWin)
-        {
-            score++;
-        }
-        else
-        {
-            life--;
-        }
-
     }
 
     public void SetPongInfo(float intro, float game) {
