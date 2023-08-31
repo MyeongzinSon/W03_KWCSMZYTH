@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,9 +9,14 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [SerializeField] GameObject[] miniGamePrefabs;
+    [SerializeField] float timeDifficultyCoefficient = 0.2f;
     public int cycleCount;
     public int startingLife;
     public int currentLife;
+
+    Queue<GameObject> miniGameQueue;
+    MiniGameManager currentMiniGame;
 
     private void Awake()
     {
@@ -34,6 +40,7 @@ public class GameManager : MonoBehaviour
     { 
         cycleCount = 0;
         currentLife = startingLife;
+        miniGameQueue = new Queue<GameObject>();
     }
 
     private void Update()
@@ -81,5 +88,35 @@ public class GameManager : MonoBehaviour
     void StartMiniGame(int index)
     {
 
+    }
+
+    GameObject GetNextMiniGame()
+    {
+        if (miniGameQueue.Count == 0)
+        {
+            var rnd = new System.Random();
+            var randomizedMiniGames = miniGamePrefabs.ToList().OrderBy(_ => rnd.Next()).ToList();
+            foreach (var miniGame in randomizedMiniGames)
+            {
+                miniGameQueue.Enqueue(miniGame);
+            }
+            cycleCount++;
+        }
+        return miniGameQueue.Dequeue();
+    }
+
+    public void LoadNextMiniGame()
+    {
+        var nextMiniGame = GetNextMiniGame();
+        Instantiate(nextMiniGame);
+        currentMiniGame = nextMiniGame.GetComponent<MiniGameManager>();
+
+        SetTimeDifficulty();
+        currentMiniGame.StartMiniGame();
+    }
+
+    void SetTimeDifficulty()
+    {
+        Time.timeScale = 1 + (cycleCount - 1) * timeDifficultyCoefficient;
     }
 }
