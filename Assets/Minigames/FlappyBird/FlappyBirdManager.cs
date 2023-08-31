@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class FlappyBirdManager : MonoBehaviour, IInputListener
+public class FlappyBirdManager : MiniGameManager, IInputListener
 {
     public bool useBufferedInput;
     public float wallSpeed;
@@ -25,12 +25,17 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
     bool wasInputA;
     bool wasInputATurnedThisFrame;
 
-    void Awake()
+    public override float IntroTime => introTime;
+    public override float RecordPlayTime => gameTime;
+
+    public void Awake()
     {
-        bird = FindObjectOfType<BirdController>();
-        walls = FindObjectsOfType<WallController>();
-        inputRecorder = FindObjectOfType<InputQueueRecorder>();
-        inputDecoder = FindObjectOfType<InputQueueDecoder>();
+        bird = transform.parent.GetComponentInChildren<BirdController>();
+        Debug.Log($"{bird.GetInstanceID()}");
+        walls = transform.parent.GetComponentsInChildren<WallController>();
+        Debug.Log($"{walls.Length}");
+        inputRecorder = transform.parent.GetComponentInChildren<InputQueueRecorder>();
+        inputDecoder = transform.parent.GetComponentInChildren<InputQueueDecoder>();
     }
     void Start()
     {
@@ -45,6 +50,8 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
         isInputA = false;
         wasInputA = false;
         wasInputATurnedThisFrame = false;
+
+        mainGame.LoadMiniGameUI(IntroTime, RecordPlayTime);
         StartIntro();
     }
     void Update()
@@ -71,17 +78,17 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
 
             if (Time.time > gameStartTime + gameTime)
             {
-                EndGame();
                 Debug.Log($"Game cleared!");
+                MiniGameClear();
             }
         }
     }
 
     public void OnPlayerDied()
     {
-        hasPlayedIntro = true;
-        EndGame();
         Debug.Log($"Player died...");
+        hasPlayedIntro = true;
+        MiniGameOver();
     }
 
     public void OnRecord()
@@ -150,11 +157,25 @@ public class FlappyBirdManager : MonoBehaviour, IInputListener
         bird.canMove = true;
         hasStartedGame = true;
     }
-    void EndGame()
+
+    protected override void MiniGameClear()
+    {
+        base.MiniGameClear();
+    }
+
+    protected override void MiniGameOver()
+    {
+        base.MiniGameOver();
+    }
+    protected override void EndMiniGame()
     {
         isGaming = false;
         bird.canMove = false;
         Debug.Log($"isGaming = {isGaming}, bird.canMove = {bird.canMove}");
+        base.EndMiniGame();
+    }
+    void EndGame()
+    {
     }
     void StartIntro()
     {
