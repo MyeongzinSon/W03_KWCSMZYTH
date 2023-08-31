@@ -212,12 +212,14 @@ public class FroggerManager : MonoBehaviour, IInputListener
     {
         Debug.Log("Die");
         OnPlayerDied();
+        GameObject.FindAnyObjectByType<TestGameManager>().SetWinOrDie(false);
     }
 
     void OnWin() {
         Debug.Log("Win");
         hasPlayedIntro = true;
         EndGame();
+        GameObject.FindAnyObjectByType<TestGameManager>().SetWinOrDie(true);
     }
 
     IEnumerator InstantiateEnemy(int lineYPos, bool isBig, float dir, GameObject prefab, float waitTime, bool isRandom)

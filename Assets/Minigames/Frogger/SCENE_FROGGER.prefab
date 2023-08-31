@@ -57,7 +57,6 @@ GameObject:
   - component: {fileID: 1637979854055975106}
   - component: {fileID: 1637979854055975105}
   - component: {fileID: 1637979854055975117}
-  - component: {fileID: 1637979854055975118}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -113,7 +112,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 7618d4649f56af645a9aaec6ab52e9af, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -151,20 +150,6 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
---- !u!114 &1637979854055975118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1637979854055975104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 249955df24687284aa6568bb23a2b6b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  x: 800
-  y: 600
 --- !u!1 &1637979854086583373
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,8 +341,8 @@ MonoBehaviour:
   bottomBound: -6
   winPosY: 2
   useBufferedInput: 0
-  introTime: 2.5
-  gameTime: 5
+  introTime: 3.3
+  gameTime: 5.3
 --- !u!114 &1637979854448350539
 MonoBehaviour:
   m_ObjectHideFlags: 0
