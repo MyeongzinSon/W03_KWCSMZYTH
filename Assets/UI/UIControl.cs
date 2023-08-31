@@ -17,7 +17,7 @@ public class UIControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(InGameUIShowCoroutine());
+        StartCoroutine(InGameUIShowCoroutine(3, 5));
     }
 
     // Update is called once per frame
