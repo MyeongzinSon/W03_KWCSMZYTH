@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 namespace Minigames.Mario.Scripts
 {
-    public class MarioPlayer : MonoBehaviour, IInputListener
+    public class MarioPlayer : MiniGameManager, IInputListener
     {
         #region InputQueue
 
@@ -70,6 +70,7 @@ namespace Minigames.Mario.Scripts
         private bool _isGaming;
         private float _gameStartTime;
         private bool _hasStartedGame = false;
+        private bool _isGameEnd = false;
         
         
         [Header("Coroutines")]
@@ -81,7 +82,9 @@ namespace Minigames.Mario.Scripts
         private static readonly int OnYourMark = Animator.StringToHash("OnYourMark");
         private static readonly int GetSet = Animator.StringToHash("GetSet");
         #endregion
-        
+
+        public override float IntroTime => introTime;
+        public override float RecordPlayTime => gameTime;
 
         private void Awake()
         {
@@ -107,6 +110,7 @@ namespace Minigames.Mario.Scripts
 
             _hasPlayedIntro = false;
             _hasStartedGame = false;
+            _isGameEnd = false;
 
             isClear = false;
             
@@ -117,6 +121,8 @@ namespace Minigames.Mario.Scripts
 
         void Update()
         {
+            if (_isGameEnd) { return; }
+
             if (!_hasPlayedIntro && Time.time > _introStartTime + introTime)
             {
                 EndIntro();
@@ -224,14 +230,18 @@ namespace Minigames.Mario.Scripts
         public void OnPlayerClear()
         {
             isClear = true;
-            EndGame();
+            MiniGameClear();
         }
         
         public void OnPlayerDied()
         {
             _hasPlayedIntro = true;
-            EndGame();
             Debug.Log($"Player died...");
+            MiniGameOver();
+        }
+        protected override void EndMiniGame()
+        {
+            _isGameEnd = true;
         }
 
         public void OnRecord()

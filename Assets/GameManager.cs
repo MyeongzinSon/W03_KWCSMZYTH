@@ -11,7 +11,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameObject[] miniGamePrefabs;
     [SerializeField] float timeDifficultyCoefficient = 0.2f;
+    [SerializeField] float gameChangeDuration = 1;
+
     public int cycleCount;
+    public int score;
     public int startingLife;
     public int currentLife;
 
@@ -35,9 +38,11 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Initialize();
+        LoadNextMiniGame();
     }
     void Initialize()
-    { 
+    {
+        score = 0;
         cycleCount = 0;
         currentLife = startingLife;
         miniGameQueue = new Queue<GameObject>();
@@ -67,14 +72,22 @@ public class GameManager : MonoBehaviour
 
     public void MiniGameClear()
     {
+        score++;
+        Debug.Log($"미니게임 깼다~ score = {score}");
+        Invoke("LoadNextMiniGame", gameChangeDuration * Time.timeScale);
 
     }
     public void MiniGameOver() 
     {
         currentLife--;
+        Debug.Log($"미니게임 실패... current life = {currentLife}");
         if (currentLife == 0)
         {
             EntireGameOver();
+        }
+        else
+        {
+            Invoke("LoadNextMiniGame", gameChangeDuration * Time.timeScale);
         }
     }
     void EntireGameOver()
@@ -107,16 +120,23 @@ public class GameManager : MonoBehaviour
 
     public void LoadNextMiniGame()
     {
+        if (currentMiniGame)
+        {
+            Debug.Log(currentMiniGame.GetInstanceID());
+            Destroy(currentMiniGame.transform.parent.gameObject);
+            Debug.Log(currentMiniGame.GetInstanceID());
+        }
+
         var nextMiniGame = GetNextMiniGame();
-        Instantiate(nextMiniGame);
-        currentMiniGame = nextMiniGame.GetComponent<MiniGameManager>();
+        currentMiniGame = Instantiate(nextMiniGame).GetComponentInChildren<MiniGameManager>();
+        currentMiniGame.Initialize();
 
         SetTimeDifficulty();
-        currentMiniGame.StartMiniGame();
     }
 
     void SetTimeDifficulty()
     {
         Time.timeScale = 1 + (cycleCount - 1) * timeDifficultyCoefficient;
+        Debug.Log($"TimeScale = {Time.timeScale}");
     }
 }

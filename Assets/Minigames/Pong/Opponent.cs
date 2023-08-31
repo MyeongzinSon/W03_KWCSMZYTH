@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Opponent : MonoBehaviour
 {
-    Temp_PongPlayer player;
+    PongManager player;
     PongController pongController;
     public float minSpeed;
     public float maxSpeed;
@@ -16,7 +16,7 @@ public class Opponent : MonoBehaviour
 
     private void Awake()
     {
-        player = FindObjectOfType<Temp_PongPlayer>();
+        player = FindObjectOfType<PongManager>();
         pongController = FindObjectOfType<PongController>();
         twoBarDistance = player.transform.position.x - transform.position.x;
         InvokeRepeating("RandomOffset", .5f, 1f);
@@ -48,7 +48,7 @@ public class Opponent : MonoBehaviour
 
     void UpdateSpeed()
     {
-        if (Temp_PongPlayer.isGameRunning)
+        if (PongManager.isGameRunning)
             currentSpeed = Mathf.Lerp(maxSpeed, minSpeed, (pongController.transform.position.x - transform.position.x) / twoBarDistance);
         else currentSpeed = 0;
     }
