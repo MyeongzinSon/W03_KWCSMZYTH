@@ -96,6 +96,12 @@ public class PongController : MonoBehaviour
             float pongDirection = rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x);
             Vector2 barPosition = other.transform.position;
             float reflectRatio = (barPosition.y - transform.position.y) / (other.transform.lossyScale.y / 2f);
+            float absRR = Mathf.Abs(reflectRatio);
+            absRR = Mathf.Clamp(absRR, .2f, 1f);
+            if(reflectRatio != 0)
+            {
+                reflectRatio = absRR * reflectRatio / Mathf.Abs(reflectRatio);
+            }
             reflectRatio = Mathf.Clamp(reflectRatio, -1f, 1f);
             float reflectAngle = player.maxAngle * reflectRatio;
             Vector2 result = Quaternion.AngleAxis(reflectAngle, Vector3.forward) * Vector2.left;
