@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Temp_PongPlayer : MiniGameManager, IInputListener
+public class PongManager : MiniGameManager, IInputListener
 {
     public bool isUsingBufferedInput;
     public float playerSpeed;
     [Header("Pong")]
     public float startingPongSpeed;
     public Vector2 startingPongDirection;
-    [Tooltip("¹Ý»çÇÒ ¼ö ÀÖ´Â ÃÖ´ë °¢. 0ÀÌ¸é ¹«Á¶°Ç ¼öÆò ÀÌµ¿")] [Range(1f,90f)] public float maxAngle;
+    [Tooltip("ï¿½Ý»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½. 0ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½")] [Range(1f,90f)] public float maxAngle;
     [Header("Dash")]
     public float dashDistance;
     public float dashTime;
@@ -20,6 +20,10 @@ public class Temp_PongPlayer : MiniGameManager, IInputListener
     public float startRecordTime;
     public float recordDuration;
     public static bool isGameRunning = true;
+
+    public int recordAlarmOpponentHitCount;
+    public float alarmTimeAfterPlayerHit;
+    public float alarmInitialDelay;
 
     [HideInInspector] public float topY;
     [HideInInspector] public float bottomY;
@@ -62,8 +66,16 @@ public class Temp_PongPlayer : MiniGameManager, IInputListener
     {
         isGameRunning = true;
         isAfterDecode = false;
-        Invoke("OnRecord", startRecordTime);
-        Invoke("OnDecode", startRecordTime + recordDuration + .5f);
+    }
+
+    public void SetRecord(float delay)
+    {
+        Invoke("OnRecord", delay);
+    }
+
+    public void SetDecode(float time)
+    {
+        Invoke("OnDecode", time);
     }
 
     private void Update()
@@ -164,7 +176,7 @@ public class Temp_PongPlayer : MiniGameManager, IInputListener
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="currentHorizontalInputDirection">-1 ¶Ç´Â +1</param>
+    /// <param name="currentHorizontalInputDirection">-1 ï¿½Ç´ï¿½ +1</param>
     private void Dash(int currentHorizontalInputDirection)
     {
         if (dashCoroutine != null) { StopCoroutine(dashCoroutine); }

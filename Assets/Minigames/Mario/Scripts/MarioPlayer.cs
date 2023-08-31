@@ -70,6 +70,7 @@ namespace Minigames.Mario.Scripts
         private bool _isGaming;
         private float _gameStartTime;
         private bool _hasStartedGame = false;
+        private bool _isGameEnd = false;
         
         
         [Header("Coroutines")]
@@ -109,6 +110,7 @@ namespace Minigames.Mario.Scripts
 
             _hasPlayedIntro = false;
             _hasStartedGame = false;
+            _isGameEnd = false;
 
             isClear = false;
             
@@ -119,6 +121,8 @@ namespace Minigames.Mario.Scripts
 
         void Update()
         {
+            if (_isGameEnd) { return; }
+
             if (!_hasPlayedIntro && Time.time > _introStartTime + introTime)
             {
                 EndIntro();
@@ -234,6 +238,10 @@ namespace Minigames.Mario.Scripts
             _hasPlayedIntro = true;
             Debug.Log($"Player died...");
             MiniGameOver();
+        }
+        protected override void EndMiniGame()
+        {
+            _isGameEnd = true;
         }
 
         public void OnRecord()
