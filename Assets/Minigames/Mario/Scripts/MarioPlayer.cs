@@ -282,6 +282,7 @@ namespace Minigames.Mario.Scripts
         public void OnPlayerClear()
         {
             isClear = true;
+            Debug.Log("CLEAR? : " + isClear);
             MiniGameClear();
         }
         
@@ -289,6 +290,7 @@ namespace Minigames.Mario.Scripts
         {
             _hasPlayedIntro = true;
             Debug.Log($"Player died...");
+            Debug.Log("CLEAR? : " + isClear);
             MiniGameOver();
         }
         protected override void EndMiniGame()
