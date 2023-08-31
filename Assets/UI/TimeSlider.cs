@@ -10,7 +10,7 @@ public class TimeSlider : MonoBehaviour
 
     void Start()
     {
-        ShowTimeSlider(5);
+        //ShowTimeSlider(5);
     }
 
     public void ShowTimeSlider(float time)
@@ -28,12 +28,12 @@ public class TimeSlider : MonoBehaviour
         {
             float t = (Time.time - startTime) / time;
             int index = Mathf.FloorToInt(t * sprites.Count);
-            GetComponent<SpriteRenderer>().sprite = sprites[index];
+            GetComponentInChildren<SpriteRenderer>().sprite = sprites[index];
             text.text = Mathf.CeilToInt(time - (Time.time - startTime)).ToString() + "초 남음";
             yield return null;
         }
         text.text = "0초 남음";
 
-        GetComponent<SpriteRenderer>().sprite = sprites[sprites.Count - 1];
+        GetComponentInChildren<SpriteRenderer>().sprite = sprites[sprites.Count - 1];
     }
 }
