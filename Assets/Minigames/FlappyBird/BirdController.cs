@@ -18,6 +18,7 @@ public class BirdController : MonoBehaviour
     {
         this.manager = manager;
         speedY = gravity;
+        canMove = false;
     }
 
 

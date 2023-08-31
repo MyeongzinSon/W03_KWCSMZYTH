@@ -14,10 +14,14 @@ public class UIControl : MonoBehaviour
     public WarningPanel warningPanel;
     public TimeSlider timeSlider;
 
+    public string introText;
+    public string inputText;
+    public string realplayText;
+
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(InGameUIShowCoroutine());
+        StartCoroutine(InGameUIShowCoroutine(3, 5));
     }
 
     // Update is called once per frame
@@ -30,13 +34,13 @@ public class UIControl : MonoBehaviour
         string s;
         switch (type) {
             case UIType.INTRO:
-                s = "준비 중";
+                s = introText;
                 break;
             case UIType.INPUT:
-                s = "멈춤!";
+                s = inputText;
                 break;
             case UIType.REALPLAY:
-                s = "반영 중!";
+                s = realplayText;
                 break;
             default:
                 s = "";
@@ -49,11 +53,12 @@ public class UIControl : MonoBehaviour
         timeSlider.ShowTimeSlider(time);
     }
 
-    public void Test() {
-
+    public void InGameUIShow(float introTime, float GameTime) {
+        StopAllCoroutines();
+        StartCoroutine(InGameUIShowCoroutine(introTime, GameTime));
     }
 
-    public IEnumerator InGameUIShowCoroutine(float introTime, float GameTime) {
+    private IEnumerator InGameUIShowCoroutine(float introTime, float GameTime) {
         ShowTimeSlider(UIType.INTRO, introTime);
         yield return new WaitForSeconds(introTime);
         warningPanel.transform.DOScale(0, 0.3f);

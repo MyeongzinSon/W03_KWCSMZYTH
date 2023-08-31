@@ -537,6 +537,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   warningPanel: {fileID: 6528911171500436645}
   timeSlider: {fileID: 6528911170438520460}
+  introText: "\uC900\uBE44 \uC911"
+  inputText: "\uBA48\uCDA4!"
+  realplayText: "\uBC18\uC601 \uC911"
 --- !u!1 &6528911171253868086
 GameObject:
   m_ObjectHideFlags: 0
