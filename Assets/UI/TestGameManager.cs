@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using DigitalRuby.LightningBolt;
+using UnityEngine.SceneManagement;
 
 public class TestGameManager : MonoBehaviour
 {
@@ -80,7 +81,7 @@ public class TestGameManager : MonoBehaviour
         ingameScript.ShowRealGameStartText();
         yield return new WaitForSeconds(3.3f);
 
-        int i = 3;
+        int i = 1;
         while (life > 0) {
             ingameScript.AboutGameText(GameAboutText(i));
             yield return new WaitForSeconds(3f);
@@ -106,7 +107,7 @@ public class TestGameManager : MonoBehaviour
                     yield return new WaitForSeconds(3.3f);
                     ingameScript.FinalEnd();
                     yield return new WaitForSeconds(3.3f);
-                    yield break;
+                    SceneManager.LoadScene("MainTest");
                 }
             }
             yield return new WaitForSeconds(3.3f);

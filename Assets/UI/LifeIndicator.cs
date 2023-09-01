@@ -7,7 +7,7 @@ public class LifeIndicator : MonoBehaviour
 {
     public GameObject one;
     public GameObject two;
-    public int score = 2;
+    public int score = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +29,7 @@ public class LifeIndicator : MonoBehaviour
     }   
 
     IEnumerator MinusCo() {
-        if (score == 1) {
+        if (score == 5) {
             two.transform.DOScale(Vector3.zero, 0.3f);
             yield return new WaitForSeconds(0.3f);
             two.SetActive(false);
