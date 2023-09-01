@@ -24,4 +24,5 @@ public interface IInputListener
     public abstract void UpdateLeft();
     public abstract void UpdateA();
     public abstract void UpdateB();
+    public abstract void OnButtonDown();
 }
